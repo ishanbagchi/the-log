@@ -1,4 +1,6 @@
 ---
+import Analytics from '@vercel/analytics/astro'
+
 interface Props {
   title: string;
   description?: string;
@@ -67,6 +69,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
   <body>
     <slot />
+    <Analytics />
   </body>
 </html>
 
