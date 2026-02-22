@@ -51,7 +51,7 @@ const currentPath = Astro.url.pathname;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 4rem; /* Slightly increased height for the two-line mobile view */
+    height: 4rem;
   }
 
   /* ─── Wordmark ───────────────────────────────────────────── */
@@ -125,7 +125,7 @@ const currentPath = Astro.url.pathname;
   /* ─── Mobile Adjustments ─────────────────────────────────── */
   @media (max-width: 640px) {
     .header-inner {
-      height: 4.5rem; /* Give the stacked text some breathing room */
+      height: 4.5rem;
     }
 
     .wordmark-group {
@@ -135,17 +135,17 @@ const currentPath = Astro.url.pathname;
     }
 
     .byline {
-      margin-left: 2.2rem; /* Aligns the "by" under "The Log" (skipping the symbol) */
+      margin-left: 2.2rem;
       margin-top: -4px;
       font-size: 0.65rem;
     }
 
     .nav-item--writing {
-      display: none; /* Removes "Writing" on mobile to save space */
+      display: none; 
     }
 
     .nav-list {
-      gap: var(--space-4); /* Tighten spacing between remaining links */
+      gap: var(--space-4); 
     }
   }
 </style>
