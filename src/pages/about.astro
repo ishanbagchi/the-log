@@ -6,7 +6,7 @@ import Footer from '../components/Footer.astro';
 
 <Layout
   title="About — Ishan"
-  description="Frontend Engineer at QuestionPro, biker, and minimalist."
+  description="Frontend Engineer, minimalist, and builder of things."
 >
   <Header />
 
@@ -23,50 +23,48 @@ import Footer from '../components/Footer.astro';
 
       <div class="about-body">
         <p>
-          I’m a <strong>Frontend Engineer</strong> at QuestionPro, where I build the 
-          interfaces that make massive BI datasets actually make sense. I spend most of 
-          my time in React and Next.js, but lately, I’ve been falling down the 
-          <strong>Apache Kafka</strong> rabbit hole—there’s something about 
-          high-throughput systems that just hits different.
+          I’m a <strong>Frontend Engineer</strong> currently working at QuestionPro. I build 
+          interfaces for BI tools that try to make sense of massive datasets. My daily 
+          bread is React and Next.js, but I’ve been spending a lot of my time lately 
+          learning about <strong>Apache Kafka</strong> and how to handle data at scale.
         </p>
 
         <p>
-          I’m based in Pune, living in a white-walled room that’s probably a bit too 
-          minimalist for its own good. My brain runs on a very specific ratio of 
-          <strong>one coffee and exactly three teas</strong>. If I’m not debugging 
-          UI state, I’m likely out on my <strong>TVS Raider</strong> or rewatching 
-          <em>One-Punch Man</em> for the vibes.
+          I'm based in Pune, living in a minimalist space that helps me keep my 
+          focus sharp. My routine is pretty simple: <strong>one cup of coffee and 
+          exactly three teas</strong>. When I need to clear my head, I’m usually 
+          out on my <strong>bike</strong> or catching up on <em>One-Punch Man</em>.
         </p>
 
         <p>
-          This site is my public notebook. No noise, no SEO-bait—just a place to 
-          document the systems I’m wrestling with and the patterns I’m learning 
-          while I work toward that 18 LPA milestone.
+          This site is essentially my public notebook. I use it to document the 
+          problems I run into, the patterns I’m learning, and the occasional 
+          deep dive into systems that catch my interest. No noise, just the signal.
         </p>
 
-        <h2>The Stack</h2>
+        <h2>The Toolkit</h2>
         <ul>
           <li><strong>Frontend:</strong> React, Next.js, TypeScript, Tailwind</li>
-          <li><strong>Backend/Systems:</strong> Node.js, Apache Kafka, Go</li>
-          <li><strong>Learning:</strong> Rust, compilers, and squeezing more performance out of the web</li>
+          <li><strong>Data & Systems:</strong> Apache Kafka, Node.js</li>
+          <li><strong>Focus:</strong> Frontend architecture, system design and scalable web systems</li>
         </ul>
 
-        <h2>Beyond the terminal</h2>
+        <h2>Beyond the code</h2>
         <p>
-          When I’m offline, I’m usually tracking my portfolio, planning an escape to 
-          Goa, or trying to convince myself to actually start that workout routine. 
-          I’m a big fan of clean code, high-leverage abstractions, and 
-          low-friction living.
+          When I’m not at my desk, I’m usually keeping an eye on my investments, 
+          planning the next trip to Goa, or thinking about finally starting 
+          that workout routine. I’m a fan of clean abstractions, simple 
+          living, and high-quality tea.
         </p>
 
         <h2>Get in touch</h2>
         <p>
-          Want to talk shop about frontend performance, distributed systems, or 
-          debate why Naruto is still elite? 
+          If you want to talk about frontend architecture, distributed systems, 
+          or why Naruto is still elite, hit me up.
         </p>
         <p>
           Find me on <a href="https://github.com/ishanbagchi" target="_blank" rel="noopener">GitHub</a> 
-          or drop me a line via <a href="mailto:hello@ishan.dev">email</a>.
+          or drop a line via <a href="mailto:hi@ishanbagchi.com">email</a>.
         </p>
       </div>
     </div>
@@ -82,6 +80,7 @@ import Footer from '../components/Footer.astro';
     padding-bottom: var(--space-24);
   }
 
+  /* ─── Back link ──────────────────────────────────────────── */
   .back-link {
     display: inline-flex;
     align-items: center;
@@ -99,6 +98,7 @@ import Footer from '../components/Footer.astro';
   .back-arrow { transition: transform 0.2s ease; }
   .back-link:hover .back-arrow { transform: translateX(-3px); }
 
+  /* ─── Page header ────────────────────────────────────────── */
   .about-header {
     margin-bottom: var(--space-10);
   }
@@ -118,6 +118,7 @@ import Footer from '../components/Footer.astro';
     line-height: 1.1;
   }
 
+  /* ─── Body ───────────────────────────────────────────────── */
   .about-body {
     font-size: 1.0625rem;
     line-height: 1.85;
