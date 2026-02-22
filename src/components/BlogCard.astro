@@ -17,7 +17,7 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
 ---
 
 <article class="card" data-tags={JSON.stringify(tags)}>
-  <a href={`/blog/${slug}`} class="card-link" aria-label={title}>
+  <a href={`/log/${slug}`} class="card-link" aria-label={title}>
     <header class="card-header">
       <time class="card-date" datetime={pubDate.toISOString()}>{formattedDate}</time>
       {tags.length > 0 && (

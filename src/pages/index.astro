@@ -6,6 +6,7 @@ import Footer from '../components/Footer.astro';
 import BlogCard from '../components/BlogCard.astro';
 
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const toRouteSlug = (id: string) => id.replace(/\.md$/, '');
 
 const posts = allPosts.sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
@@ -71,7 +72,7 @@ const allTags = Object.entries(tagCounts).sort(([a], [b]) => a.localeCompare(b))
                 title={post.data.title}
                 description={post.data.description}
                 pubDate={post.data.pubDate}
-                slug={post.id}
+                slug={toRouteSlug(post.id)}
                 tags={post.data.tags}
               />
             ))
