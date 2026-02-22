@@ -1,0 +1,135 @@
+---
+const navLinks = [
+  { href: '/', label: 'Writing' },
+  { href: '/about', label: 'About' },
+  { href: '/settings', label: 'Settings' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header" id="site-header">
+  <div class="container container--wide header-inner">
+<div class="wordmark-group">
+      <a href="/" class="wordmark">
+        <span class="wordmark-symbol">◈</span>
+        <span class="wordmark-text">The Log</span>
+      </a>
+      <span class="byline">by <a href="https://ishanbagchi.com" class="byline-link" target="_blank" rel="noopener">Ishan Bagchi</a></span>
+    </div>
+
+    <nav aria-label="Primary navigation">
+      <ul class="nav-list">
+        {navLinks.map(({ href, label }) => (
+          <li>
+            <a
+              href={href}
+              class:list={['nav-link', { 'nav-link--active': currentPath === href }]}
+            >
+              {label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--color-border-subtle);
+    background: var(--color-header-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: background 0.25s ease, border-color 0.25s ease;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 3.5rem;
+  }
+
+  /* ─── Wordmark ───────────────────────────────────────────── */
+  .wordmark-group {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+  }
+
+  .wordmark {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    transition: opacity 0.2s ease;
+  }
+
+  .wordmark:hover {
+    opacity: 0.75;
+  }
+
+  .byline {
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 300;
+    color: var(--color-text-muted);
+    opacity: 0.7;
+    white-space: nowrap;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    transform-origin: left center;
+  }
+
+  .byline-link {
+    color: var(--color-text-muted);
+    transition: color 0.2s ease;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-weight: 400;
+  }
+
+  .byline-link:hover {
+    color: var(--color-gold);
+  }
+
+  .wordmark-symbol {
+    color: var(--color-gold);
+    font-size: 1.6rem;
+    line-height: 1;
+  }
+
+  .wordmark-text {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: var(--color-text);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    transform-origin: left center;
+  }
+
+  /* ─── Nav ────────────────────────────────────────────────── */
+  .nav-list {
+    display: flex;
+    list-style: none;
+    gap: var(--space-6);
+    align-items: center;
+  }
+
+  .nav-link {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    transition: color 0.2s ease;
+  }
+
+  .nav-link:hover,
+  .nav-link--active {
+    color: var(--color-gold);
+  }
+</style>

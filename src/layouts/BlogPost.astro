@@ -1,0 +1,450 @@
+---
+import Layout from './Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  tags?: string[];
+  readingTime?: number;
+}
+
+const { title, description, pubDate, updatedDate, tags = [], readingTime } = Astro.props;
+
+const formattedPubDate = pubDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<Layout title={`${title} — The Log`} description={description}>
+  <Header />
+
+  <main class="post-wrapper">
+    <article class="post-container">
+      <a href="/" class="back-link">
+        <span class="back-arrow">←</span> All posts
+      </a>
+
+      <header class="post-header">
+        <div class="post-meta">
+          <time datetime={pubDate.toISOString()}>{formattedPubDate}</time>
+          {updatedDate && (
+            <span class="updated">
+              · Updated <time datetime={updatedDate.toISOString()}>{formattedUpdatedDate}</time>
+            </span>
+          )}
+          {readingTime && (
+            <span class="reading-time">· {readingTime} min read</span>
+          )}
+        </div>
+
+        <h1 class="post-title display-serif">{title}</h1>
+        <p class="post-description">{description}</p>
+
+        {tags.length > 0 && (
+          <div class="post-tags">
+            {tags.map((tag) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+        )}
+
+        <div class="post-divider" />
+      </header>
+
+      <div class="prose">
+        <slot />
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .post-wrapper {
+    flex: 1;
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-24);
+  }
+
+  /* ─── Back link ──────────────────────────────────────────── */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    transition: color 0.2s ease;
+    margin-bottom: var(--space-12);
+  }
+
+  .back-link:hover {
+    color: var(--color-gold);
+  }
+
+  .back-arrow {
+    transition: transform 0.2s ease;
+  }
+
+  .back-link:hover .back-arrow {
+    transform: translateX(-3px);
+  }
+
+  /* ─── Post header ────────────────────────────────────────── */
+  .post-header {
+    margin-bottom: var(--space-12);
+  }
+
+  .post-meta {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+    margin-bottom: var(--space-4);
+  }
+
+  .reading-time {
+    color: var(--color-text-muted);
+    opacity: 0.7;
+  }
+
+  .updated {
+    color: var(--color-text-muted);
+    opacity: 0.7;
+  }
+
+  .post-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 400;
+    margin-bottom: var(--space-4);
+    color: var(--color-text);
+    line-height: 1.15;
+  }
+
+  .post-description {
+    font-size: 1.05rem;
+    color: var(--color-text-dim);
+    line-height: 1.7;
+    margin-bottom: var(--space-6);
+    font-weight: 400;
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-8);
+  }
+
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    border: 1px solid var(--color-gold-dim);
+    border-radius: 2px;
+    padding: 0.15em 0.6em;
+    background: var(--color-gold-muted);
+  }
+
+  .post-divider {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      var(--color-gold-dim),
+      var(--color-border),
+      transparent
+    );
+    margin-top: var(--space-8);
+  }
+
+  /* ─── Prose ──────────────────────────────────────────────── */
+  .post-container {
+    width: 100%;
+    max-width: var(--prose-max-width, 42rem);
+    margin-inline: auto;
+    padding-inline: var(--space-6);
+  }
+
+  .prose {
+    font-size: var(--prose-font-size);
+    color: var(--color-text);
+    line-height: var(--prose-line-height);
+    font-weight: 400;
+  }
+
+  .prose :global(h2) {
+    font-family: var(--font-sans);
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-top: var(--space-12);
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border-subtle);
+    color: var(--color-text);
+  }
+
+  .prose :global(h3) {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text);
+  }
+
+  .prose :global(h4) {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: var(--color-gold);
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+  }
+
+  .prose :global(p) {
+    margin-bottom: var(--space-6);
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    padding-left: var(--space-6);
+    margin-bottom: var(--space-6);
+  }
+
+  .prose :global(li) {
+    margin-bottom: var(--space-2);
+    line-height: 1.75;
+  }
+
+  .prose :global(a) {
+    color: var(--color-gold);
+    border-bottom: 1px solid var(--color-gold-dim);
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .prose :global(a:hover) {
+    color: var(--color-text);
+    border-color: var(--color-text-muted);
+  }
+
+  /* ─── Code block: restructured layout ──────────────────────────── */
+  
+  /* pre = outer shell (no scroll); toolbar + scroll-area inside */
+  .prose :global(pre) {
+    position: relative;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+  }
+
+  /* Toolbar row: language label left, copy button right */
+  .prose :global(.code-toolbar) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+    background-color: rgba(128, 128, 128, 0.05);
+    min-height: 2.5rem;
+  }
+
+  .prose :global(.code-lang-label) {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    opacity: 0.6;
+    user-select: none;
+  }
+
+  /* Copy button — in toolbar, fades in on toolbar hover */
+  .prose :global(.copy-btn) {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.04em;
+    padding: 0.25em 0.75em;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .prose :global(.code-toolbar:hover .copy-btn) { opacity: 1; }
+
+  .prose :global(.copy-btn:hover) {
+    color: var(--color-gold);
+    border-color: var(--color-gold-dim);
+    opacity: 1;
+  }
+
+  .prose :global(.copy-btn--copied) {
+    color: #6ab97c !important;
+    border-color: #3a5c40 !important;
+    opacity: 1 !important;
+  }
+
+  /* Scrollable area */
+  .prose :global(.code-scroll-area) {
+    overflow-x: auto;
+    padding: 1.25rem 1.5rem 1.25rem 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+
+  /*
+   * 2-column grid: [number] [code line]
+   */
+  .prose :global(.code-grid) {
+    display: grid;
+    grid-template-columns: minmax(2.5rem, max-content) 1fr; 
+    column-gap: 1rem;
+  }
+
+  .prose :global(.ln) {
+    position: sticky;
+    left: 0;
+    font-family: var(--font-mono);
+    font-size: var(--code-font-size);
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    text-align: right;
+    user-select: none;
+    background-color: var(--astro-code-color-background, #f6f8fa); 
+    z-index: 10; 
+    padding: 0 1rem 0 1rem;
+    width: 3rem;
+    border-right: 1px solid var(--color-border);
+  }
+
+  :global(.dark) .prose :global(.ln),
+  @media (prefers-color-scheme: dark) {
+    .prose :global(.ln) {
+      background-color: var(--astro-code-color-background, #24292e); 
+    }
+  }
+
+  .prose :global(.line-nums) { display: none; }
+
+  .prose :global(pre code) {
+    display: block; 
+  }
+
+  .prose :global(.line) {
+    display: block;
+    line-height: 1.65;
+    white-space: pre;
+  }
+
+  .prose :global(strong) {
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  .prose :global(em) {
+    font-style: italic;
+    color: var(--color-text-dim);
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLPreElement>('.prose pre').forEach((pre) => {
+    const code = pre.querySelector<HTMLElement>('code');
+    if (!code) return;
+    const lang = pre.getAttribute('data-language') ?? '';
+
+    // ── 1. Ensure lines are wrapped in .line spans ──────────────────
+    if (!code.querySelector('.line')) {
+      const rawLines = code.innerHTML.split('\n');
+      if (rawLines.at(-1) === '') rawLines.pop();
+      code.innerHTML = rawLines
+        .map((l) => `<span class="line">${l === '' ? '\u200b' : l}</span>`)
+        .join('');
+    } else {
+      code.querySelectorAll<HTMLElement>('.line').forEach((ln) => {
+        if (!ln.textContent?.trim()) ln.innerHTML = '\u200b';
+      });
+    }
+
+    // ── 2. Build toolbar (lang label + copy button) ──────────────
+    const toolbar = document.createElement('div');
+    toolbar.className = 'code-toolbar';
+
+    const langLabel = document.createElement('span');
+    langLabel.className = 'code-lang-label';
+    langLabel.textContent = lang;
+    toolbar.appendChild(langLabel);
+
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'copy-btn';
+    copyBtn.textContent = 'copy';
+    copyBtn.setAttribute('aria-label', 'Copy code to clipboard');
+    copyBtn.addEventListener('click', async () => {
+      const text = Array.from(code.querySelectorAll<HTMLElement>('.line'))
+        .map((l) => (l.textContent ?? '').replace('\u200b', ''))
+        .join('\n')
+        .trimEnd();
+      try {
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent = 'copied!';
+        copyBtn.classList.add('copy-btn--copied');
+        setTimeout(() => {
+          copyBtn.textContent = 'copy';
+          copyBtn.classList.remove('copy-btn--copied');
+        }, 2000);
+      } catch {
+        copyBtn.textContent = 'failed';
+        setTimeout(() => { copyBtn.textContent = 'copy'; }, 2000);
+      }
+    });
+    toolbar.appendChild(copyBtn);
+
+    // ── 3. Rebuild code as a grid: paired .ln + .line per row ───
+    const lineSpans = Array.from(code.querySelectorAll<HTMLElement>('.line'));
+    code.innerHTML = '';
+    code.className = (code.className + ' code-grid').trim();
+
+    lineSpans.forEach((lineEl, i) => {
+      const ln = document.createElement('span');
+      ln.className = 'ln';
+      ln.setAttribute('aria-hidden', 'true');
+      ln.textContent = String(i + 1);
+      code.appendChild(ln);
+      code.appendChild(lineEl);
+    });
+
+    // ── 4. Scrollable area wraps code ────────────────────────────
+    const scrollArea = document.createElement('div');
+    scrollArea.className = 'code-scroll-area';
+    scrollArea.appendChild(code);
+
+    // ── 5. Rebuild <pre>: toolbar on top, scroll area below ──────
+    pre.innerHTML = '';
+    pre.appendChild(toolbar);
+    pre.appendChild(scrollArea);
+  });
+</script>

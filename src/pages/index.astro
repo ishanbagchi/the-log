@@ -1,11 +1,309 @@
 ---
-import Welcome from '../components/Welcome.astro';
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import BlogCard from '../components/BlogCard.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+
+const posts = allPosts.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+// Collect all unique tags with their post counts.
+const tagCounts = posts.reduce<Record<string, number>>((acc, p) => {
+  p.data.tags.forEach((t) => { acc[t] = (acc[t] ?? 0) + 1; });
+  return acc;
+}, {});
+const allTags = Object.entries(tagCounts).sort(([a], [b]) => a.localeCompare(b));
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="The Log — Technical Writings">
+  <Header />
+
+  <main class="home-main">
+    <div class="container">
+      <!-- Hero -->
+      <section class="hero">
+        <p class="hero-label">// writing</p>
+        <div class="hero-title-row">
+          <h1 class="hero-headline display-serif" id="hero-headline">The Log</h1>
+					<span class="hero-byline">by <a href="https://ishanbagchi.com" class="hero-byline-link" target="_blank" rel="noopener">Ishan Bagchi</a></span>
+        </div>
+        <p class="hero-sub">
+          A collection of technical writings on software engineering,
+          systems design, and the craft of building things that last.
+        </p>
+      </section>
+
+      <!-- Posts -->
+      <section class="posts-section" aria-label="Blog posts">
+        <!-- Tag filter bar -->
+        {allTags.length > 0 && (
+          <div class="filter-section">
+            <div class="filter-header">
+              <span class="filter-label">// filter by topic</span>
+              <span class="filter-count" id="filter-count">{posts.length} post{posts.length !== 1 ? 's' : ''}</span>
+            </div>
+            <div class="tag-filter" role="group" aria-label="Filter by tag">
+              <button class="filter-btn filter-btn--active" data-tag="all">
+                All
+                <span class="btn-count">{posts.length}</span>
+              </button>
+              {allTags.map(([tag, count]) => (
+                <button class="filter-btn" data-tag={tag}>
+                  {tag}
+                  <span class="btn-count">{count}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- Post cards -->
+        <div id="posts-list">
+          {posts.length === 0 ? (
+            <p class="empty">No posts yet. Check back soon.</p>
+          ) : (
+            posts.map((post) => (
+              <BlogCard
+                title={post.data.title}
+                description={post.data.description}
+                pubDate={post.data.pubDate}
+                slug={post.id}
+                tags={post.data.tags}
+              />
+            ))
+          )}
+        </div>
+
+        <p id="no-results" class="empty" hidden>
+          No posts match that tag.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
 </Layout>
+
+<style>
+  .home-main {
+    flex: 1;
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-24);
+  }
+
+  /* ─── Hero ───────────────────────────────────────────────── */
+  .hero {
+    margin-bottom: var(--space-16);
+    padding-bottom: var(--space-12);
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .hero-label {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    color: var(--color-gold);
+    margin-bottom: var(--space-4);
+    opacity: 0.8;
+  }
+
+  .hero-title-row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-6);
+  }
+
+  .hero-headline {
+    font-size: clamp(2.5rem, 7vw, 4rem);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+    line-height: 1;
+    margin-bottom: 0;
+  }
+
+  .hero-byline {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: var(--color-text-muted);
+    opacity: 0.7;
+    transition: opacity 0.2s ease, color 0.2s ease;
+    white-space: nowrap;
+    align-self: flex-end;
+    padding-bottom: 0.15em;
+  }
+
+  .hero-byline-link {
+		color: var(--color-text-muted);
+		transition: color 0.2s ease;
+		text-decoration: underline;
+		text-underline-offset: 2px;
+		font-weight: 400;
+	}
+
+  .hero-byline-link:hover {
+    opacity: 1;
+    color: var(--color-gold);
+  }
+
+  .hero-sub {
+    font-size: 1rem;
+    color: var(--color-text-dim);
+    line-height: 1.75;
+    font-weight: 300;
+    max-width: 34rem;
+  }
+
+  /* ─── Posts ──────────────────────────────────────────────── */
+  .posts-section {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ─── Tag filter bar ─────────────────────────────────────── */
+  .filter-section {
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .filter-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-4);
+  }
+
+  .filter-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    text-transform: lowercase;
+  }
+
+  .filter-count {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    transition: color 0.2s ease;
+  }
+
+  .tag-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.35em 0.9em;
+    border-radius: 3px;
+    border: 1px solid var(--color-border);
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    line-height: 1.5;
+  }
+
+  .filter-btn:hover {
+    color: var(--color-gold);
+    border-color: var(--color-gold-dim);
+    background: var(--color-gold-muted);
+  }
+
+  .filter-btn--active {
+    color: var(--color-gold);
+    border-color: var(--color-gold-dim);
+    background: var(--color-gold-muted);
+  }
+
+  .btn-count {
+    font-size: 0.65rem;
+    opacity: 0.6;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .filter-btn--active .btn-count {
+    opacity: 0.8;
+  }
+
+  /* ─── Post fade animation ────────────────────────────────── */
+  #posts-list :global(.card) {
+    transition: opacity 0.2s ease;
+  }
+
+  #posts-list :global(.card[hidden]) {
+    display: none;
+  }
+
+  .empty {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    padding: var(--space-8) 0;
+  }
+</style>
+
+<script>
+  const buttons     = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const postsList   = document.getElementById('posts-list')!;
+  const noResults   = document.getElementById('no-results') as HTMLParagraphElement;
+  const filterCount = document.getElementById('filter-count') as HTMLSpanElement;
+  const cards       = postsList.querySelectorAll<HTMLElement>('[data-tags]');
+
+  function filterPosts(tag: string) {
+    let visibleCount = 0;
+
+    cards.forEach((card) => {
+      const tags: string[] = JSON.parse(card.dataset.tags ?? '[]');
+      const show = tag === 'all' || tags.includes(tag);
+      card.hidden = !show;
+      if (show) visibleCount++;
+    });
+
+    noResults.hidden = visibleCount > 0;
+
+    const label = tag === 'all' ? 'All topics' : `#${tag}`;
+    filterCount.textContent = `${visibleCount} post${visibleCount !== 1 ? 's' : ''}`;
+
+    buttons.forEach((btn) => {
+      btn.classList.toggle('filter-btn--active', btn.dataset.tag === tag);
+    });
+  }
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => filterPosts(btn.dataset.tag!));
+  });
+</script>
+
+<script>
+  /* ─── Hide header wordmark while hero is in view ────────── */
+  const header   = document.getElementById('site-header')!;
+  const headline = document.getElementById('hero-headline')!;
+
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      header.classList.toggle('header--hero-visible', entry.isIntersecting);
+    },
+    { threshold: 0.1 }
+  );
+
+  observer.observe(headline);
+</script>
+

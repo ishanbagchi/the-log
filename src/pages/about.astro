@@ -1,0 +1,186 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="About — Ishan"
+  description="Frontend Engineer at QuestionPro, biker, and minimalist."
+>
+  <Header />
+
+  <main class="about-main">
+    <div class="container">
+      <a href="/" class="back-link">
+        <span class="back-arrow">←</span> all posts
+      </a>
+
+      <header class="about-header">
+        <p class="label">// who-is-ishan</p>
+        <h1 class="about-title display-serif">Hey, I'm Ishan. ✌️</h1>
+      </header>
+
+      <div class="about-body">
+        <p>
+          I’m a <strong>Frontend Engineer</strong> at QuestionPro, where I build the 
+          interfaces that make massive BI datasets actually make sense. I spend most of 
+          my time in React and Next.js, but lately, I’ve been falling down the 
+          <strong>Apache Kafka</strong> rabbit hole—there’s something about 
+          high-throughput systems that just hits different.
+        </p>
+
+        <p>
+          I’m based in Pune, living in a white-walled room that’s probably a bit too 
+          minimalist for its own good. My brain runs on a very specific ratio of 
+          <strong>one coffee and exactly three teas</strong>. If I’m not debugging 
+          UI state, I’m likely out on my <strong>TVS Raider</strong> or rewatching 
+          <em>One-Punch Man</em> for the vibes.
+        </p>
+
+        <p>
+          This site is my public notebook. No noise, no SEO-bait—just a place to 
+          document the systems I’m wrestling with and the patterns I’m learning 
+          while I work toward that 18 LPA milestone.
+        </p>
+
+        <h2>The Stack</h2>
+        <ul>
+          <li><strong>Frontend:</strong> React, Next.js, TypeScript, Tailwind</li>
+          <li><strong>Backend/Systems:</strong> Node.js, Apache Kafka, Go</li>
+          <li><strong>Learning:</strong> Rust, compilers, and squeezing more performance out of the web</li>
+        </ul>
+
+        <h2>Beyond the terminal</h2>
+        <p>
+          When I’m offline, I’m usually tracking my portfolio, planning an escape to 
+          Goa, or trying to convince myself to actually start that workout routine. 
+          I’m a big fan of clean code, high-leverage abstractions, and 
+          low-friction living.
+        </p>
+
+        <h2>Get in touch</h2>
+        <p>
+          Want to talk shop about frontend performance, distributed systems, or 
+          debate why Naruto is still elite? 
+        </p>
+        <p>
+          Find me on <a href="https://github.com/ishanbagchi" target="_blank" rel="noopener">GitHub</a> 
+          or drop me a line via <a href="mailto:hello@ishan.dev">email</a>.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .about-main {
+    flex: 1;
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-24);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    transition: color 0.2s ease;
+    margin-bottom: var(--space-12);
+  }
+
+  .back-link:hover { color: var(--color-gold); }
+
+  .back-arrow { transition: transform 0.2s ease; }
+  .back-link:hover .back-arrow { transform: translateX(-3px); }
+
+  .about-header {
+    margin-bottom: var(--space-10);
+  }
+
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    color: var(--color-gold);
+    margin-bottom: var(--space-4);
+    opacity: 0.8;
+  }
+
+  .about-title {
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    color: var(--color-text);
+    line-height: 1.1;
+  }
+
+  .about-body {
+    font-size: 1.0625rem;
+    line-height: 1.85;
+    font-weight: 400;
+  }
+
+  .about-body p {
+    margin-bottom: var(--space-6);
+    color: var(--color-text-dim);
+  }
+
+  .about-body strong {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+
+  .about-body em {
+    font-style: italic;
+    color: var(--color-text-dim);
+  }
+
+  .about-body h2 {
+    font-family: var(--font-sans);
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-top: var(--space-10);
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border-subtle);
+    color: var(--color-text);
+  }
+
+  .about-body ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: var(--space-6);
+  }
+
+  .about-body li {
+    position: relative;
+    padding-left: var(--space-6);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-dim);
+    line-height: 1.75;
+  }
+
+  .about-body li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .about-body a {
+    color: var(--color-gold);
+    border-bottom: 1px solid var(--color-gold-dim);
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .about-body a:hover {
+    color: var(--color-text);
+    border-color: var(--color-text-muted);
+  }
+</style>

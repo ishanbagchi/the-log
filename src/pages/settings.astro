@@ -1,0 +1,574 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+---
+
+<Layout title="Settings — The Log" description="Adjust your preferences for The Log.">
+  <Header />
+
+  <main class="settings-main">
+    <div class="container">
+      <a href="/" class="back-link">
+        <span class="back-arrow">←</span> All posts
+      </a>
+
+      <header class="settings-header">
+        <p class="label">// settings</p>
+        <h1 class="settings-title display-serif">Preferences</h1>
+        <p class="settings-sub">
+          Adjustments are saved to your browser and applied on every visit.
+        </p>
+      </header>
+
+      <!-- ─── Appearance ─────────────────────────────────── -->
+      <section class="settings-section">
+        <h2 class="section-heading">Appearance</h2>
+        <div class="settings-card">
+          <ThemeToggle />
+        </div>
+      </section>
+
+      <!-- ─── Reading ───────────────────────────────────── -->
+      <section class="settings-section">
+        <h2 class="section-heading">Reading</h2>
+        <div class="settings-card">
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">Font size</span>
+              <span class="setting-desc">Prose text size in blog posts</span>
+            </div>
+            <div class="seg-control" data-key="prose-font-size" data-default="1.0625rem">
+              <button data-val="0.9375rem">Small</button>
+              <button data-val="1.0625rem">Medium</button>
+              <button data-val="1.1875rem">Large</button>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">Reading width</span>
+              <span class="setting-desc">Max width of the post content column</span>
+            </div>
+            <div class="seg-control" data-key="prose-max-width" data-default="42rem">
+              <button data-val="34rem">Narrow</button>
+              <button data-val="42rem">Normal</button>
+              <button data-val="54rem">Wide</button>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">Line height</span>
+              <span class="setting-desc">Spacing between lines in prose</span>
+            </div>
+            <div class="seg-control" data-key="prose-line-height" data-default="1.85">
+              <button data-val="1.6">Compact</button>
+              <button data-val="1.85">Comfortable</button>
+              <button data-val="2.15">Spacious</button>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">Show reading time</span>
+              <span class="setting-desc">Display estimated read time on posts</span>
+            </div>
+            <label class="toggle-switch" aria-label="Toggle reading time visibility">
+              <input id="toggle-reading-time" type="checkbox" class="toggle-input" />
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </label>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ─── Code blocks ────────────────────────────────── -->
+      <section class="settings-section">
+        <h2 class="section-heading">Code blocks</h2>
+        <div class="settings-card">
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">Code font size</span>
+              <span class="setting-desc">Text size inside code blocks</span>
+            </div>
+            <div class="seg-control" data-key="code-font-size" data-default="0.875rem">
+              <button data-val="0.8rem">Smaller</button>
+              <button data-val="0.875rem">Default</button>
+              <button data-val="1rem">Larger</button>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">Wrap long lines</span>
+              <span class="setting-desc">Soft-wrap instead of horizontal scroll</span>
+            </div>
+            <label class="toggle-switch" aria-label="Toggle code line wrapping">
+              <input id="toggle-wrap-code" type="checkbox" class="toggle-input" />
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">Show language label</span>
+              <span class="setting-desc">Display language badge on code blocks</span>
+            </div>
+            <label class="toggle-switch" aria-label="Toggle language label visibility">
+              <input id="toggle-lang-label" type="checkbox" class="toggle-input" />
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">Show line numbers</span>
+              <span class="setting-desc">Display line numbers on the left of code blocks</span>
+            </div>
+            <label class="toggle-switch" aria-label="Toggle line number visibility">
+              <input id="toggle-line-numbers" type="checkbox" class="toggle-input" />
+              <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            </label>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ─── Reset ─────────────────────────────────────────── -->
+      <div class="reset-row">
+        <button id="reset-all" class="reset-btn">↺ Reset all to defaults</button>
+      </div>
+
+      <!-- ─── About ─────────────────────────────────────── -->
+      <section class="settings-section">
+        <h2 class="section-heading">About these settings</h2>
+        <p class="note">
+          Settings are stored in <code>localStorage</code> on your device.
+          No data is sent to any server. Clearing your browser storage will
+          reset all preferences to their defaults.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  const html = document.documentElement;
+
+  /* ─── Segmented controls ──────────────────────────────────── */
+  document.querySelectorAll<HTMLDivElement>('.seg-control').forEach((ctrl) => {
+    const key = ctrl.dataset.key!;
+    const def = ctrl.dataset.default!;
+    const saved = localStorage.getItem(key) ?? def;
+    const btns = ctrl.querySelectorAll<HTMLButtonElement>('button');
+
+    function activate(val: string) {
+      btns.forEach((b) => b.classList.toggle('active', b.dataset.val === val));
+      html.style.setProperty(`--${key}`, val);
+      localStorage.setItem(key, val);
+    }
+
+    activate(saved);
+    btns.forEach((btn) => btn.addEventListener('click', () => activate(btn.dataset.val!)));
+  });
+
+  /* ─── Boolean toggles ─────────────────────────────────────── */
+
+  // Show reading time — ON by default; checked=true means visible
+  const rtInput = document.getElementById('toggle-reading-time') as HTMLInputElement;
+  rtInput.checked = localStorage.getItem('show-reading-time') !== '0';
+  html.classList.toggle('hide-reading-time', !rtInput.checked);
+  rtInput.addEventListener('change', () => {
+    localStorage.setItem('show-reading-time', rtInput.checked ? '1' : '0');
+    html.classList.toggle('hide-reading-time', !rtInput.checked);
+  });
+
+  // Wrap long lines — OFF by default; checked=true means wrap
+  const wrapInput = document.getElementById('toggle-wrap-code') as HTMLInputElement;
+  wrapInput.checked = localStorage.getItem('wrap-code') === '1';
+  html.classList.toggle('wrap-code', wrapInput.checked);
+  wrapInput.addEventListener('change', () => {
+    localStorage.setItem('wrap-code', wrapInput.checked ? '1' : '0');
+    html.classList.toggle('wrap-code', wrapInput.checked);
+  });
+
+  // Show language label — ON by default; checked=true means visible
+  const langInput = document.getElementById('toggle-lang-label') as HTMLInputElement;
+  langInput.checked = localStorage.getItem('show-lang-label') !== '0';
+  html.classList.toggle('hide-lang-label', !langInput.checked);
+  langInput.addEventListener('change', () => {
+    localStorage.setItem('show-lang-label', langInput.checked ? '1' : '0');
+    html.classList.toggle('hide-lang-label', !langInput.checked);
+  });
+  // Show line numbers — ON by default; checked=true means visible
+  const lineNumsInput = document.getElementById('toggle-line-numbers') as HTMLInputElement;
+  lineNumsInput.checked = localStorage.getItem('show-line-numbers') !== '0';
+  html.classList.toggle('hide-line-numbers', !lineNumsInput.checked);
+  lineNumsInput.addEventListener('change', () => {
+    localStorage.setItem('show-line-numbers', lineNumsInput.checked ? '1' : '0');
+    html.classList.toggle('hide-line-numbers', !lineNumsInput.checked);
+  });
+  /* ─── Reset all ─────────────────────────────────────────── */
+  document.getElementById('reset-all')!.addEventListener('click', () => {
+    const keys = [
+      'prose-font-size', 'prose-line-height', 'prose-max-width', 'code-font-size',
+      'show-reading-time', 'wrap-code', 'show-lang-label', 'show-line-numbers',
+    ];
+    keys.forEach((k) => localStorage.removeItem(k));
+
+    // Reset CSS variables explicitly to their defaults
+    html.style.setProperty('--prose-font-size',   '1.0625rem');
+    html.style.setProperty('--prose-line-height', '1.85');
+    html.style.setProperty('--prose-max-width',   '42rem');
+    html.style.setProperty('--code-font-size',    '0.875rem');
+
+    // Reset classes
+    html.classList.remove('hide-reading-time', 'wrap-code', 'hide-lang-label', 'hide-line-numbers');
+
+    // Re-run seg controls so buttons reflect defaults
+    document.querySelectorAll<HTMLDivElement>('.seg-control').forEach((ctrl) => {
+      const def = ctrl.dataset.default!;
+      ctrl.querySelectorAll<HTMLButtonElement>('button').forEach((b) =>
+        b.classList.toggle('active', b.dataset.val === def)
+      );
+    });
+
+    // Reset toggle checkboxes
+    (document.getElementById('toggle-reading-time') as HTMLInputElement).checked = true;
+    (document.getElementById('toggle-wrap-code') as HTMLInputElement).checked = false;
+    (document.getElementById('toggle-lang-label') as HTMLInputElement).checked = true;
+    (document.getElementById('toggle-line-numbers') as HTMLInputElement).checked = true;
+
+    // Flash "Done" on the button
+    const btn = document.getElementById('reset-all') as HTMLButtonElement;
+    btn.textContent = '✓ Done';
+    btn.classList.add('done');
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.textContent = '↺ Reset all to defaults';
+      btn.classList.remove('done');
+      btn.disabled = false;
+    }, 1800);
+  });
+</script>
+
+<style>
+  .settings-main {
+    flex: 1;
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-24);
+  }
+
+  /* ─── Back link ──────────────────────────────────────────── */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    transition: color 0.2s ease;
+    margin-bottom: var(--space-12);
+  }
+
+  .back-link:hover { color: var(--color-gold); }
+
+  .back-arrow { transition: transform 0.2s ease; }
+  .back-link:hover .back-arrow { transform: translateX(-3px); }
+
+  /* ─── Page header ────────────────────────────────────────── */
+  .settings-header {
+    margin-bottom: var(--space-12);
+    padding-bottom: var(--space-8);
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    color: var(--color-gold);
+    margin-bottom: var(--space-4);
+    opacity: 0.8;
+  }
+
+  .settings-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: var(--color-text);
+    margin-bottom: var(--space-3);
+    line-height: 1.1;
+  }
+
+  .settings-sub {
+    font-size: 1.0625rem;
+    color: var(--color-text-dim);
+    font-weight: 400;
+    line-height: 1.85;
+  }
+
+  /* ─── Sections ───────────────────────────────────────────── */
+  .settings-section {
+    margin-bottom: var(--space-12);
+  }
+
+  .section-heading {
+    font-family: var(--font-sans);
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-text);
+    margin-top: 0;
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  /* ─── Card ───────────────────────────────────────────────── */
+  .settings-card {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-surface);
+    overflow: hidden;
+    transition: border-color 0.25s ease, background 0.25s ease;
+  }
+
+  /* ─── Setting row ────────────────────────────────────────── */
+  .setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-8);
+    padding: var(--space-5, 1.25rem) var(--space-6);
+    border-bottom: 1px solid var(--color-border-subtle);
+    transition: background 0.15s ease;
+  }
+
+  .setting-row:last-child { border-bottom: none; }
+
+  .setting-row:hover {
+    background: rgba(255,255,255,0.015);
+  }
+
+  [data-theme='light'] .setting-row:hover {
+    background: rgba(0,0,0,0.018);
+  }
+
+  .setting-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+    min-width: 0;
+  }
+
+  .setting-name {
+    font-size: 0.9375rem;
+    color: var(--color-text);
+    font-weight: 400;
+  }
+
+  .setting-desc {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.03em;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+
+  /* ─── Segmented control ──────────────────────────────────── */
+  .seg-control {
+    display: flex;
+    flex-shrink: 0;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    padding: 3px;
+    gap: 2px;
+  }
+
+  .seg-control button {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    padding: 0.3em 0.8em;
+    background: transparent;
+    color: var(--color-text-muted);
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease,
+                box-shadow 0.15s ease, transform 0.1s ease;
+    white-space: nowrap;
+  }
+
+  .seg-control button:hover {
+    color: var(--color-text);
+    background: var(--color-surface);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  }
+
+  .seg-control button:active {
+    transform: translateY(1px) scale(0.95);
+    box-shadow: none;
+  }
+
+  .seg-control button.active {
+    background: var(--color-surface);
+    color: var(--color-gold);
+    box-shadow: 0 0 0 1px var(--color-gold-dim);
+    transform: none;
+  }
+
+  .seg-control button.active:hover {
+    box-shadow: 0 0 0 1px var(--color-gold), 0 2px 8px rgba(200, 169, 110, 0.15);
+    transform: translateY(-1px);
+  }
+
+  .seg-control button.active:active {
+    transform: translateY(1px) scale(0.95);
+    box-shadow: 0 0 0 1px var(--color-gold-dim);
+  }
+
+  /* ─── Toggle switch ──────────────────────────────────────── */
+  .toggle-switch {
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform 0.12s ease;
+  }
+
+  .toggle-switch:active {
+    transform: scale(0.93);
+  }
+
+  .toggle-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .toggle-track {
+    display: block;
+    position: relative;
+    width: 2.75rem;
+    height: 1.5rem;
+    background: var(--color-border);
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.2s ease;
+  }
+
+  .toggle-switch:hover .toggle-track {
+    border-color: var(--color-text-muted);
+    box-shadow: 0 0 0 3px rgba(107, 101, 133, 0.15);
+  }
+
+  .toggle-switch:hover .toggle-input:checked + .toggle-track {
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 3px rgba(200, 169, 110, 0.12);
+  }
+
+  .toggle-thumb {
+    position: absolute;
+    top: 50%;
+    left: 3px;
+    transform: translateY(-50%);
+    width: 1rem;
+    height: 1rem;
+    background: var(--color-text-muted);
+    border-radius: 50%;
+    transition: transform 0.25s ease, background 0.25s ease, width 0.15s ease, height 0.15s ease;
+    will-change: transform;
+  }
+
+  .toggle-switch:hover .toggle-thumb {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  .toggle-input:checked + .toggle-track {
+    background: var(--color-gold-muted);
+    border-color: var(--color-gold-dim);
+  }
+
+  .toggle-input:checked + .toggle-track .toggle-thumb {
+    transform: translateY(-50%) translateX(1.25rem);
+    background: var(--color-gold);
+  }
+
+  .toggle-input:focus-visible + .toggle-track {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+
+  /* ─── Reset button ───────────────────────────────────────── */
+  .reset-row {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: var(--space-6);
+  }
+
+  .reset-btn {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.45em 1.1em;
+    background: transparent;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease,
+                background 0.2s ease, transform 0.15s ease,
+                box-shadow 0.2s ease;
+  }
+
+  .reset-btn:hover {
+    color: var(--color-gold);
+    border-color: var(--color-gold-dim);
+    background: var(--color-gold-muted);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(200, 169, 110, 0.08);
+  }
+
+  .reset-btn:active {
+    transform: translateY(1px) scale(0.97);
+    box-shadow: none;
+    background: var(--color-gold-muted);
+    border-color: var(--color-gold-dim);
+    color: var(--color-gold);
+  }
+
+  .reset-btn.done {
+    color: #6ab97c;
+    border-color: #3a5c40;
+    background: rgba(106, 185, 124, 0.06);
+  }
+
+  /* ─── Note ───────────────────────────────────────────────── */
+  .note {
+    font-size: 0.9375rem;
+    color: var(--color-text-dim);
+    line-height: 1.85;
+    font-weight: 400;
+    padding: var(--space-6);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+  }
+
+  .note code {
+    font-size: 0.8em;
+    color: var(--color-gold);
+  }
+</style>

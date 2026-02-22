@@ -1,0 +1,51 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container container--wide footer-inner">
+    <p class="footer-copy">
+      &copy; {year} — Built with <a href="https://astro.build" target="_blank" rel="noopener">Astro</a>
+    </p>
+    <p class="footer-note">// crafted with care</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--color-border-subtle);
+    padding: var(--space-8) 0;
+    margin-top: auto;
+  }
+
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+  }
+
+  .footer-copy {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .footer-copy a {
+    color: var(--color-gold);
+    border-bottom: 1px solid var(--color-gold-dim);
+    transition: opacity 0.2s ease;
+  }
+
+  .footer-copy a:hover {
+    opacity: 0.75;
+  }
+
+  .footer-note {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    opacity: 0.4;
+  }
+</style>

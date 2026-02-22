@@ -1,0 +1,148 @@
+---
+// No server-side props — all state is driven by data-theme on <html>.
+---
+
+<!--
+  Renders a labelled toggle-switch row.
+  The checked state is synced on mount and on every click.
+  Checked = dark mode.
+-->
+<div class="setting-row">
+  <div class="setting-info">
+    <span class="setting-name">Dark mode</span>
+    <span class="setting-desc">Switch between light and dark appearance</span>
+  </div>
+
+  <label class="toggle-switch" aria-label="Toggle dark mode">
+    <input id="theme-checkbox" type="checkbox" class="toggle-input" />
+    <span class="toggle-track">
+      <span class="toggle-thumb"></span>
+    </span>
+  </label>
+</div>
+
+<script>
+  const checkbox = document.getElementById('theme-checkbox') as HTMLInputElement;
+  const html = document.documentElement;
+
+  function applyTheme(theme: 'dark' | 'light') {
+    html.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    checkbox.checked = theme === 'dark';
+  }
+
+  // Sync checkbox with whatever the bootstrap script already set.
+  checkbox.checked = (html.getAttribute('data-theme') ?? 'dark') === 'dark';
+
+  checkbox.addEventListener('change', () => {
+    applyTheme(checkbox.checked ? 'dark' : 'light');
+  });
+</script>
+
+<style>
+  /* ─── Setting row ────────────────────────────────────────── */
+  .setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-8);
+    padding: var(--space-5, 1.25rem) var(--space-6);
+  }
+
+  .setting-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2em;
+  }
+
+  .setting-name {
+    font-size: 0.95rem;
+    color: var(--color-text);
+    font-weight: 400;
+  }
+
+  .setting-desc {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    color: var(--color-text-muted);
+  }
+
+  /* ─── Toggle switch ──────────────────────────────────────── */
+  .toggle-switch {
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform 0.12s ease;
+  }
+
+  .toggle-switch:active {
+    transform: scale(0.93);
+  }
+
+  .toggle-input {
+    /* sr-only: visually hidden but still interactive so :checked and change events work */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .toggle-track {
+    display: block;
+    position: relative;
+    width: 2.75rem;
+    height: 1.5rem;
+    background: var(--color-border);
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.2s ease;
+  }
+
+  .toggle-switch:hover .toggle-track {
+    border-color: var(--color-text-muted);
+    box-shadow: 0 0 0 3px rgba(107, 101, 133, 0.15);
+  }
+
+  .toggle-switch:hover .toggle-input:checked + .toggle-track {
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 3px rgba(200, 169, 110, 0.12);
+  }
+
+  .toggle-thumb {
+    position: absolute;
+    top: 50%;
+    left: 3px;
+    transform: translateY(-50%);
+    width: 1rem;
+    height: 1rem;
+    background: var(--color-text-muted);
+    border-radius: 50%;
+    transition: transform 0.25s ease, background 0.25s ease, width 0.15s ease, height 0.15s ease;
+    will-change: transform;
+  }
+
+  .toggle-switch:hover .toggle-thumb {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  /* Checked (dark mode on) state */
+  .toggle-input:checked + .toggle-track {
+    background: var(--color-gold-muted);
+    border-color: var(--color-gold-dim);
+  }
+
+  .toggle-input:checked + .toggle-track .toggle-thumb {
+    transform: translateY(-50%) translateX(1.25rem);
+    background: var(--color-gold);
+  }
+
+  /* Focus ring */
+  .toggle-input:focus-visible + .toggle-track {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+</style>
+
