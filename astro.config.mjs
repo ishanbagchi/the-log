@@ -3,7 +3,7 @@ import { defineConfig } from 'astro/config'
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://ishanbagchi.com',
+	site: 'https://logs.ishanbagchi.com',
 	markdown: {
 		shikiConfig: {
 			themes: {
