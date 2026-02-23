@@ -332,21 +332,16 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
     font-size: var(--code-font-size);
     line-height: 1.65;
     color: var(--color-text-muted);
+    opacity: 0.45;
     text-align: right;
     user-select: none;
-    background-color: var(--astro-code-color-background, #f6f8fa); 
-    z-index: 10; 
-    padding: 0 1rem 0 1rem;
-    width: 3rem;
+    z-index: 10;
+    padding: 0 1rem;
+    min-width: 3rem;
     border-right: 1px solid var(--color-border);
   }
 
-  :global(.dark) .prose :global(.ln),
-  @media (prefers-color-scheme: dark) {
-    .prose :global(.ln) {
-      background-color: var(--astro-code-color-background, #24292e); 
-    }
-  }
+  /* Background is set globally in Layout.astro to match Shiki theme */
 
   .prose :global(.line-nums) { display: none; }
 
@@ -358,6 +353,8 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
     display: block;
     line-height: 1.65;
     white-space: pre;
+    tab-size: 2;
+    -moz-tab-size: 2;
   }
 
   .prose :global(strong) {

@@ -5,16 +5,21 @@ import BlogPost from '../../layouts/BlogPost.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
-  return posts.map((post) => ({
-    params: { slug: post.id.replace(/\.md$/, '') },
-    props: { post },
-  }));
+  
+  return posts.map((post) => {
+    let cleanSlug = post.id.replace(/\.(md|mdx)$/, '');
+    cleanSlug = cleanSlug.replace(/\/index$/, '');
+
+    return {
+      params: { slug: cleanSlug },
+      props: { post },
+    };
+  });
 }
 
 const { post } = Astro.props as { post: CollectionEntry<'blog'> };
 const { Content } = await render(post);
 
-// Estimate reading time: ~200 words per minute for technical content.
 const wordCount = post.body?.trim().split(/\s+/).length ?? 0;
 const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 ---

@@ -1,0 +1,129 @@
+---
+title: 'Debouncing vs. Throttling: Optimizing Event Handling for Performance'
+description: 'Learn the key differences between debouncing and throttling in JavaScript, and how to apply these techniques using custom React hooks to improve performance.'
+pubDate: 2026-02-23
+tags: ['craft', 'principles', 'architecture', 'react', 'performance']
+---
+
+import EventVisualizer from '../../../components/blog/EventVisualizer.astro'
+
+If you’ve ever built a search bar or an infinite scroll, you’ve probably noticed that the browser is a bit _too_ good at its job. It fires events like `scroll` or `keyup` dozens of times a second. If your event handler does anything remotely heavy, like an complex data recalculation or an API call, your UI is going to feel like it’s running on a toaster.
+
+To fix this, we use **Debouncing** and **Throttling**. They sound similar, but using the wrong one is a classic "jank" move. Let's break down how they work and how to build them in React without importing heavy third-party libraries.
+
+## 1. Debouncing: "Wait for the Pause"
+
+Debouncing is all about waiting for a pause. It tells the function: "Don't run yet. Wait until there’s been a bit of total silence."
+
+### The "Angry Boss" Example
+
+Imagine you have an angry boss. Every time you walk into his office to give him a status update, he tells you, "Go away, I'm busy! Come back when you're actually done with the _whole_ task." If you keep walking in every 5 minutes, he never listens. He only hears you out when you finally stop bothering him for an hour.
+
+### In React (Vanilla Custom Hook)
+
+We use a custom hook with `useRef` to hold the timer. This ensures our timeout survives re-renders, and the `useEffect` cleanup prevents memory leaks if the component unmounts before the timer fires.
+
+```javascript
+import { useRef, useEffect, useCallback } from 'react'
+
+export function useDebounce(callback, delay) {
+	const timeoutRef = useRef(null)
+
+	const debouncedFn = useCallback(
+		(...args) => {
+			// Clear the previous timer if the user acts again
+			if (timeoutRef.current) {
+				clearTimeout(timeoutRef.current)
+			}
+
+			// Start a fresh timer
+			timeoutRef.current = setTimeout(() => {
+				callback(...args)
+			}, delay)
+		},
+		[callback, delay],
+	)
+
+	// Clean up on unmount. Trust me, you don't want ghost timers
+	// trying to update state on a component that doesn't exist anymore.
+	useEffect(() => {
+		return () => {
+			if (timeoutRef.current) clearTimeout(timeoutRef.current)
+		}
+	}, [])
+
+	return debouncedFn
+}
+```
+
+**Perfect for:** A **Search Bar**. You don't want to hit your backend for every single letter a user types. You want to wait until they finish the word.
+
+## 2. Throttling: "The Steady Heartbeat"
+
+Throttling is different. It doesn't care if you're still "typing" or "scrolling." It just says, "I will only execute this function once every ms, no matter what."
+
+### The "Water Tap" Example
+
+Think of a leaky faucet. No matter how much pressure is in the pipes, the faucet only lets out one drop every second. It doesn't care how much water is "waiting" to get out; it has a fixed, steady rhythm.
+
+### In React (Vanilla Custom Hook)
+
+For throttling, we don't necessarily need a timer. We just need to track the timestamp of when the function _last_ ran, and compare it to the current time.
+
+```javascript
+import { useRef, useCallback } from 'react'
+
+export function useThrottle(callback, limit) {
+	const lastRun = useRef(Date.now())
+
+	const throttledFn = useCallback(
+		(...args) => {
+			const now = Date.now()
+
+			// Only fire if enough time has passed since the last run
+			if (now - lastRun.current >= limit) {
+				callback(...args)
+				lastRun.current = now // Update the timestamp
+			}
+		},
+		[callback, limit],
+	)
+
+	return throttledFn
+}
+```
+
+**Perfect for:** A **Scroll-to-Top button** or **Window Resizing**. As the user scrolls, you need to check their position. Checking 100 times a second is overkill; checking every 200ms feels perfectly smooth to the human eye but saves a ton of CPU.
+
+## Seeing it in Action
+
+Theory is great, but seeing the event stream makes it click. Try mashing the button below to see exactly how the raw events compare to our debounced and throttled hooks in real-time.
+
+<EventVisualizer />
+
+## So, which one do I pick?
+
+The easiest way to decide is to ask yourself: **Do I need the intermediate states?**
+
+- **No, I just need the final result:** Use **Debounce**. (e.g., "What did they finally type?")
+- **Yes, I need to track progress while it's happening:** Use **Throttle**. (e.g., "How far down the page are they right now?")
+
+### Key Technical Comparison
+
+| Strategy     | Execution                       | Best For                                     |
+| ------------ | ------------------------------- | -------------------------------------------- |
+| **Debounce** | After the "storm" has passed.   | API searches, Form validation, Auto-saving.  |
+| **Throttle** | At a steady "heartbeat" rhythm. | Scroll progress, Mouse tracking, Game loops. |
+
+## The Bottom Line
+
+At the end of the day, debouncing and throttling aren't just "optimization tricks", they are the difference between a UI that feels premium and one that feels broken.
+
+Choosing between them is simple:
+
+- If you’re waiting for the user to **finish** (like typing a search), **Debounce it**.
+- If you need to track the user **while they move** (like scrolling or dragging), **Throttle it**.
+
+In 2026, we’re obsessed with bundle sizes. While libraries like Lodash are a safe classic, if you're only using them for these two functions, you're basically flying a Boeing 747 to the grocery store. A few well-placed `useRef` and `useCallback` hooks in your React components will do the job perfectly without adding a single kilobyte of junk to your bundle.
+
+Don't over-engineer it. Just identify the "noisy" events in your app, pick the right strategy, and give your users' CPUs a break. Your Lighthouse score will thank you.

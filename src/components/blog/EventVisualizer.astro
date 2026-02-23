@@ -1,0 +1,551 @@
+---
+// src/components/blog/EventVisualizer.astro
+---
+
+<div class="ev-root">
+  <!-- Header -->
+  <div class="ev-header">
+    <div class="ev-header-text">
+      <span class="ev-label">// interactive demo</span>
+      <h3 class="ev-title">Live Event Stream</h3>
+      <p class="ev-sub">Spam the button to see how each strategy handles events in real-time.</p>
+    </div>
+    <div class="ev-controls">
+      <button class="ev-trigger" id="ev-trigger">Trigger event</button>
+      <button class="ev-reset" id="ev-reset" title="Reset counters">↺</button>
+    </div>
+  </div>
+
+  <!-- Timing config bar -->
+  <div class="ev-config">
+    <span class="ev-config-label">Timing window</span>
+    <div class="ev-slider-group">
+      <span class="ev-slider-min">50ms</span>
+      <input
+        type="range"
+        id="ev-cooldown-slider"
+        min="50" max="2000" step="50" value="500"
+        class="ev-slider"
+      />
+      <span class="ev-slider-max">2000ms</span>
+    </div>
+    <output class="ev-slider-output" id="ev-cooldown-output">500ms</output>
+  </div>
+
+  <!-- Tracks -->
+  <div class="ev-tracks">
+
+    <div class="ev-track">
+      <div class="ev-track-meta">
+        <div class="ev-track-info">
+          <span class="ev-track-name">Raw</span>
+          <span class="ev-track-desc">Fires on every single event</span>
+        </div>
+        <span class="ev-badge ev-badge--blue"><span class="ev-count" id="count-raw">0</span> fired</span>
+      </div>
+      <div class="ev-lane" id="lane-raw"><span class="ev-now-line"></span></div>
+    </div>
+
+    <div class="ev-track">
+      <div class="ev-track-meta">
+        <div class="ev-track-info">
+          <span class="ev-track-name">Debounced <span class="ev-param">500ms</span></span>
+          <span class="ev-track-desc">Waits for silence before firing</span>
+        </div>
+        <span class="ev-badge ev-badge--green"><span class="ev-count" id="count-debounced">0</span> fired</span>
+      </div>
+      <div class="ev-lane" id="lane-debounced">
+        <span class="ev-now-line"></span>
+        <div class="ev-cooldown-bar ev-cooldown-bar--green" id="debounce-bar"></div>
+      </div>
+    </div>
+
+    <div class="ev-track">
+      <div class="ev-track-meta">
+        <div class="ev-track-info">
+          <span class="ev-track-name">Throttled <span class="ev-param">500ms</span></span>
+          <span class="ev-track-desc">Fires at most once per interval</span>
+        </div>
+        <span class="ev-badge ev-badge--gold"><span class="ev-count" id="count-throttled">0</span> fired</span>
+      </div>
+      <div class="ev-lane" id="lane-throttled">
+        <span class="ev-now-line"></span>
+        <div class="ev-cooldown-bar ev-cooldown-bar--gold" id="throttle-bar"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Legend -->
+  <div class="ev-legend">
+    <span class="ev-legend-item ev-legend--blue">● Raw</span>
+    <span class="ev-legend-item ev-legend--green">● Debounced</span>
+    <span class="ev-legend-item ev-legend--gold">● Throttled</span>
+    <span class="ev-legend-item ev-legend--muted">● Blocked</span>
+    <span class="ev-legend-sep">·</span>
+    <span class="ev-legend-item ev-legend--muted">▬ Cooldown window</span>
+  </div>
+</div>
+
+<style>
+  .ev-root {
+    margin: var(--space-8) 0;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--color-surface);
+    font-family: var(--font-sans);
+  }
+
+  /* ─── Header ─────────────────────────────────────────────── */
+  .ev-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-6);
+    padding: var(--space-6);
+    border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+  }
+
+  .ev-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    opacity: 0.85;
+    margin-bottom: var(--space-2);
+  }
+
+  .ev-title {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: var(--space-2);
+    line-height: 1.3;
+  }
+
+  .ev-sub {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .ev-controls {
+    display: flex;
+    gap: var(--space-2);
+    flex-shrink: 0;
+    align-items: center;
+  }
+
+  .ev-trigger {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.03em;
+    padding: 0.45em 1.1em;
+    border: 1px solid var(--color-gold-dim);
+    border-radius: 4px;
+    background: var(--color-gold-muted);
+    color: var(--color-gold);
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    user-select: none;
+  }
+
+  .ev-trigger:hover  { background: rgba(200,169,110,0.15); border-color: var(--color-gold); }
+  .ev-trigger:active { transform: scale(0.95); }
+
+  .ev-reset {
+    font-size: 0.9rem;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .ev-reset:hover { color: var(--color-text); border-color: var(--color-text-muted); }
+
+  /* ─── Config bar ────────────────────────────────────────── */
+  .ev-config {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-6);
+    border-bottom: 1px solid var(--color-border-subtle);
+    background: var(--color-bg);
+    flex-wrap: wrap;
+  }
+
+  .ev-config-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+
+  .ev-slider-group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .ev-slider-min,
+  .ev-slider-max {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--color-text-muted);
+    opacity: 0.5;
+    white-space: nowrap;
+  }
+
+  .ev-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 3px;
+    border-radius: 999px;
+    background: var(--color-border);
+    outline: none;
+    cursor: pointer;
+  }
+
+  .ev-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--color-gold);
+    border: 2px solid var(--color-surface);
+    box-shadow: 0 0 0 1px var(--color-gold-dim);
+    cursor: pointer;
+    transition: box-shadow 0.15s ease, transform 0.1s ease;
+  }
+
+  .ev-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--color-gold);
+    border: 2px solid var(--color-surface);
+    box-shadow: 0 0 0 1px var(--color-gold-dim);
+    cursor: pointer;
+    transition: box-shadow 0.15s ease, transform 0.1s ease;
+  }
+
+  .ev-slider:hover::-webkit-slider-thumb {
+    box-shadow: 0 0 0 4px var(--color-gold-muted);
+  }
+
+  .ev-slider:hover::-moz-range-thumb {
+    box-shadow: 0 0 0 4px var(--color-gold-muted);
+  }
+
+  .ev-slider-output {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--color-gold);
+    min-width: 4.5ch;
+    text-align: right;
+  }
+
+  /* ─── Tracks ─────────────────────────────────────────────── */
+  .ev-tracks {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ev-track {
+    padding: var(--space-5) var(--space-6);
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .ev-track:last-child { border-bottom: none; }
+
+  .ev-track-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-3);
+    gap: var(--space-4);
+  }
+
+  .ev-track-info {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .ev-track-name {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text);
+    letter-spacing: 0.02em;
+  }
+
+  .ev-param {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--color-text-muted);
+    font-weight: 400;
+  }
+
+  .ev-track-desc {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+  }
+
+  /* ─── Badges ─────────────────────────────────────────────── */
+  .ev-badge {
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.04em;
+    padding: 0.2em 0.7em;
+    border-radius: 2px;
+    border: 1px solid;
+    white-space: nowrap;
+    transition: color 0.15s ease;
+  }
+
+  .ev-badge--blue  { color: #76b5f5; border-color: rgba(118,181,245,0.3); background: rgba(118,181,245,0.07); }
+  .ev-badge--green { color: #6ab97c; border-color: rgba(106,185,124,0.3); background: rgba(106,185,124,0.07); }
+  .ev-badge--gold  { color: var(--color-gold); border-color: var(--color-gold-dim); background: var(--color-gold-muted); }
+
+  .ev-count { font-weight: 600; }
+
+  /* ─── Lane ───────────────────────────────────────────────── */
+  .ev-lane {
+    position: relative;
+    height: 2.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background: var(--color-bg);
+    overflow: hidden;
+  }
+
+  .ev-now-line {
+    position: absolute;
+    right: 1.2rem;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--color-border);
+    z-index: 1;
+  }
+
+  /* Cooldown bar that shrinks from the Now line leftward */
+  .ev-cooldown-bar {
+    position: absolute;
+    right: 1.2rem;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    opacity: 0.12;
+    transform-origin: right;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .ev-cooldown-bar--green { background: #6ab97c; }
+  .ev-cooldown-bar--gold  { background: var(--color-gold); }
+
+  /* ─── Legend ─────────────────────────────────────────────── */
+  .ev-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-6);
+    border-top: 1px solid var(--color-border-subtle);
+    background: var(--color-bg);
+  }
+
+  .ev-legend-item {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+  }
+
+  .ev-legend-sep  { color: var(--color-border); }
+  .ev-legend--blue  { color: #76b5f5; }
+  .ev-legend--green { color: #6ab97c; }
+  .ev-legend--gold  { color: var(--color-gold); }
+  .ev-legend--muted { color: var(--color-text-muted); }
+
+  /* ─── Dots injected by JS ────────────────────────────────── */
+  :global(.ev-dot) {
+    position: absolute;
+    right: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%) scale(1.4);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    z-index: 10;
+    animation: ev-slide 2.8s linear forwards, ev-pulse 0.35s ease-out;
+    pointer-events: none;
+  }
+
+  :global(.ev-dot--blocked) {
+    width: 6px;
+    height: 6px;
+    opacity: 0.25 !important;
+    animation: ev-slide 2.8s linear forwards;
+  }
+
+  @keyframes ev-slide {
+    0%   { right: 1.2rem; opacity: 1;   transform: translateY(-50%) scale(1.4); }
+    8%   {                               transform: translateY(-50%) scale(1);   }
+    85%  {                opacity: 1; }
+    100% { right: 100%;   opacity: 0;   transform: translateY(-50%) scale(0.6); }
+  }
+
+  @keyframes ev-pulse {
+    0%   { box-shadow: 0 0 0 0 currentColor; }
+    100% { box-shadow: 0 0 0 7px transparent; }
+  }
+
+  /* count flash */
+  :global(.ev-count-flash) {
+    animation: ev-count-pop 0.25s ease;
+  }
+
+  @keyframes ev-count-pop {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.5); }
+    100% { transform: scale(1); }
+  }
+</style>
+
+<script>
+  const trigger  = document.getElementById('ev-trigger')!;
+  const resetBtn = document.getElementById('ev-reset')!;
+
+  const laneRaw       = document.getElementById('lane-raw')!;
+  const laneDebounced = document.getElementById('lane-debounced')!;
+  const laneThrottled = document.getElementById('lane-throttled')!;
+
+  const countRaw       = document.getElementById('count-raw')!;
+  const countDebounced = document.getElementById('count-debounced')!;
+  const countThrottled = document.getElementById('count-throttled')!;
+
+  const debounceBar = document.getElementById('debounce-bar')!;
+  const throttleBar = document.getElementById('throttle-bar')!;
+
+  const slider = document.getElementById('ev-cooldown-slider') as HTMLInputElement;
+  const sliderOutput = document.getElementById('ev-cooldown-output')!;
+
+  // Dynamic param labels (<span class="ev-param">)
+  const debounceParam  = document.querySelector('.ev-track:nth-child(2) .ev-param') as HTMLElement;
+  const throttleParam  = document.querySelector('.ev-track:nth-child(3) .ev-param') as HTMLElement;
+
+  const ANIM_DURATION = 2800;
+  let cooldown = 500;
+
+  slider.addEventListener('input', () => {
+    cooldown = parseInt(slider.value, 10);
+    sliderOutput.textContent = cooldown + 'ms';
+    if (debounceParam) debounceParam.textContent = cooldown + 'ms';
+    if (throttleParam) throttleParam.textContent = cooldown + 'ms';
+    // Cancel any in-flight debounce so it respects the new timing
+    clearTimeout(debounceTimer);
+    lastFire = 0;
+  });
+
+  // ── Helpers ──────────────────────────────────────────────────
+  const bump = (el: HTMLElement) => {
+    let n = parseInt(el.textContent ?? '0', 10) + 1;
+    el.textContent = String(n);
+    el.classList.remove('ev-count-flash');
+    void el.offsetWidth; // reflow
+    el.classList.add('ev-count-flash');
+  };
+
+  const spawnDot = (lane: HTMLElement, color: string, blocked = false) => {
+    const dot = document.createElement('span');
+    dot.className = 'ev-dot' + (blocked ? ' ev-dot--blocked' : '');
+    dot.style.cssText = `color:${color};background:${color};`;
+    lane.appendChild(dot);
+    setTimeout(() => dot.remove(), ANIM_DURATION);
+  };
+
+  const animateCooldown = (bar: HTMLElement) => {
+    bar.style.transition = 'none';
+    bar.style.width = cooldown + 'px';
+    bar.getBoundingClientRect();
+    bar.style.transition = `width ${cooldown}ms linear`;
+    bar.style.width = '0px';
+  };
+
+  // ── Debounce ─────────────────────────────────────────────────
+  let debounceTimer: ReturnType<typeof setTimeout> | undefined;
+
+  const handleDebounce = () => {
+    clearTimeout(debounceTimer);
+    animateCooldown(debounceBar);
+    debounceTimer = setTimeout(() => {
+      spawnDot(laneDebounced, '#6ab97c');
+      bump(countDebounced);
+    }, cooldown);
+  };
+
+  // ── Throttle ─────────────────────────────────────────────────
+  let lastFire = 0;
+
+  const handleThrottle = () => {
+    const now = Date.now();
+    if (now - lastFire >= cooldown) {
+      spawnDot(laneThrottled, '#c8a96e');
+      bump(countThrottled);
+      lastFire = now;
+      animateCooldown(throttleBar);
+    } else {
+      spawnDot(laneThrottled, '#6b6585', true);
+    }
+  };
+
+  // ── Main click ───────────────────────────────────────────────
+  trigger.addEventListener('click', () => {
+    spawnDot(laneRaw, '#76b5f5');
+    bump(countRaw);
+    handleDebounce();
+    handleThrottle();
+  });
+
+  // ── Reset ────────────────────────────────────────────────────
+  resetBtn.addEventListener('click', () => {
+    [countRaw, countDebounced, countThrottled].forEach((el) => { el.textContent = '0'; });
+    [laneRaw, laneDebounced, laneThrottled].forEach((lane) => {
+      lane.querySelectorAll('.ev-dot').forEach((d) => d.remove());
+    });
+    clearTimeout(debounceTimer);
+    debounceBar.style.cssText = 'width:0';
+    throttleBar.style.cssText = 'width:0';
+    lastFire = 0;
+    // Reset slider to default
+    cooldown = 500;
+    slider.value = '500';
+    sliderOutput.textContent = '500ms';
+    if (debounceParam) debounceParam.textContent = '500ms';
+    if (throttleParam) throttleParam.textContent = '500ms';
+  });
+</script>
