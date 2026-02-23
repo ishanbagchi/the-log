@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",
+    "@iconify-json/lucide": "^1.2.93",
     "@vercel/analytics": "^1.6.1",
-    "astro": "^5.17.1"
+    "astro": "^5.17.1",
+    "astro-icon": "^1.1.5"
   }
 }

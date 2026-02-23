@@ -1,4 +1,6 @@
 ---
+import { Icon } from 'astro-icon/components';
+
 interface Props {
   title: string;
   description: string;
@@ -32,7 +34,7 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
     <h2 class="card-title">{title}</h2>
     <p class="card-description">{description}</p>
 
-    <span class="card-cta">Read →</span>
+    <span class="card-cta">Read <Icon name="lucide:arrow-right" size={12} /></span>
   </a>
 </article>
 
@@ -112,15 +114,26 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
   }
 
   .card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
     font-family: var(--font-mono);
     font-size: 0.75rem;
     letter-spacing: 0.04em;
     color: var(--color-text-muted);
-    transition: color 0.2s ease, letter-spacing 0.2s ease;
+    transition: color 0.2s ease;
+  }
+
+  .card-cta svg {
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
   }
 
   .card:hover .card-cta {
     color: var(--color-gold);
-    letter-spacing: 0.08em;
+  }
+
+  .card:hover .card-cta svg {
+    transform: translateX(3px);
   }
 </style>

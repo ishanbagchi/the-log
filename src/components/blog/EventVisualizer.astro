@@ -1,4 +1,5 @@
 ---
+import { Icon } from 'astro-icon/components';
 // src/components/blog/EventVisualizer.astro
 ---
 
@@ -8,11 +9,12 @@
     <div class="ev-header-text">
       <span class="ev-label">// interactive demo</span>
       <h3 class="ev-title">Live Event Stream</h3>
-      <p class="ev-sub">Spam the button to see how each strategy handles events in real-time.</p>
+      <p class="ev-sub">Click the button — or hit <kbd>Space</kbd> — to see how each strategy handles events in real-time.</p>
     </div>
     <div class="ev-controls">
-      <button class="ev-trigger" id="ev-trigger">Trigger event</button>
-      <button class="ev-reset" id="ev-reset" title="Reset counters">↺</button>
+      <button class="ev-trigger" id="ev-trigger"><Icon name="lucide:zap" size={13} />Trigger event</button>
+      <button class="ev-auto" id="ev-auto" title="Auto-fire"><Icon name="lucide:play" size={13} /></button>
+      <button class="ev-reset" id="ev-reset" title="Reset"><Icon name="lucide:rotate-ccw" size={15} /></button>
     </div>
   </div>
 
@@ -49,7 +51,7 @@
     <div class="ev-track">
       <div class="ev-track-meta">
         <div class="ev-track-info">
-          <span class="ev-track-name">Debounced <span class="ev-param">500ms</span></span>
+          <span class="ev-track-name">Debounced <span class="ev-param" id="param-debounced">500ms</span></span>
           <span class="ev-track-desc">Waits for silence before firing</span>
         </div>
         <span class="ev-badge ev-badge--green"><span class="ev-count" id="count-debounced">0</span> fired</span>
@@ -57,13 +59,14 @@
       <div class="ev-lane" id="lane-debounced">
         <span class="ev-now-line"></span>
         <div class="ev-cooldown-bar ev-cooldown-bar--green" id="debounce-bar"></div>
+        <span class="ev-pending" id="debounce-pending"></span>
       </div>
     </div>
 
     <div class="ev-track">
       <div class="ev-track-meta">
         <div class="ev-track-info">
-          <span class="ev-track-name">Throttled <span class="ev-param">500ms</span></span>
+          <span class="ev-track-name">Throttled <span class="ev-param" id="param-throttled">500ms</span></span>
           <span class="ev-track-desc">Fires at most once per interval</span>
         </div>
         <span class="ev-badge ev-badge--gold"><span class="ev-count" id="count-throttled">0</span> fired</span>
@@ -135,6 +138,16 @@
     margin: 0;
   }
 
+  kbd {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    padding: 0.1em 0.4em;
+    border: 1px solid var(--color-border);
+    border-radius: 3px;
+    background: var(--color-surface);
+    color: var(--color-text-muted);
+  }
+
   .ev-controls {
     display: flex;
     gap: var(--space-2);
@@ -143,6 +156,9 @@
   }
 
   .ev-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
     font-family: var(--font-mono);
     font-size: 0.75rem;
     letter-spacing: 0.03em;
@@ -158,6 +174,37 @@
 
   .ev-trigger:hover  { background: rgba(200,169,110,0.15); border-color: var(--color-gold); }
   .ev-trigger:active { transform: scale(0.95); }
+
+  .ev-auto {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .ev-auto:hover { color: var(--color-text); border-color: var(--color-text-muted); }
+
+  .ev-auto--active {
+    color: #6ab97c !important;
+    border-color: rgba(106,185,124,0.5) !important;
+    background: rgba(106,185,124,0.08) !important;
+  }
+
+  .ev-auto--active :global(svg) {
+    animation: ev-auto-pulse 1.2s ease-in-out infinite;
+  }
+
+  @keyframes ev-auto-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+  }
 
   .ev-reset {
     font-size: 0.9rem;
@@ -175,6 +222,15 @@
   }
 
   .ev-reset:hover { color: var(--color-text); border-color: var(--color-text-muted); }
+
+  .ev-reset--spin :global(svg) {
+    animation: ev-spin 0.5s ease-in-out;
+  }
+
+  @keyframes ev-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(-360deg); }
+  }
 
   /* ─── Config bar ────────────────────────────────────────── */
   .ev-config {
@@ -219,7 +275,13 @@
     appearance: none;
     height: 3px;
     border-radius: 999px;
-    background: var(--color-border);
+    background: linear-gradient(
+      to right,
+      var(--color-gold-dim) 0%,
+      var(--color-gold-dim) var(--fill-pct, 25%),
+      var(--color-border)   var(--fill-pct, 25%),
+      var(--color-border)   100%
+    );
     outline: none;
     cursor: pointer;
   }
@@ -351,6 +413,32 @@
     z-index: 1;
   }
 
+  /* Pending debounce indicator */
+  .ev-pending {
+    position: absolute;
+    right: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #6ab97c;
+    opacity: 0;
+    z-index: 5;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+  }
+
+  .ev-lane--pending .ev-pending {
+    opacity: 1;
+    animation: ev-pending-pulse 0.8s ease-in-out infinite;
+  }
+
+  @keyframes ev-pending-pulse {
+    0%, 100% { transform: translateY(-50%) scale(1);   opacity: 1; }
+    50%       { transform: translateY(-50%) scale(1.7); opacity: 0.5; }
+  }
+
   /* Cooldown bar that shrinks from the Now line leftward */
   .ev-cooldown-bar {
     position: absolute;
@@ -439,6 +527,7 @@
 <script>
   const trigger  = document.getElementById('ev-trigger')!;
   const resetBtn = document.getElementById('ev-reset')!;
+  const autoBtn  = document.getElementById('ev-auto')!;
 
   const laneRaw       = document.getElementById('lane-raw')!;
   const laneDebounced = document.getElementById('lane-debounced')!;
@@ -448,26 +537,33 @@
   const countDebounced = document.getElementById('count-debounced')!;
   const countThrottled = document.getElementById('count-throttled')!;
 
-  const debounceBar = document.getElementById('debounce-bar')!;
-  const throttleBar = document.getElementById('throttle-bar')!;
+  const debounceBar     = document.getElementById('debounce-bar')!;
+  const throttleBar     = document.getElementById('throttle-bar')!;
+  const debouncePending = document.getElementById('debounce-pending')!;
 
-  const slider = document.getElementById('ev-cooldown-slider') as HTMLInputElement;
+  const slider      = document.getElementById('ev-cooldown-slider') as HTMLInputElement;
   const sliderOutput = document.getElementById('ev-cooldown-output')!;
-
-  // Dynamic param labels (<span class="ev-param">)
-  const debounceParam  = document.querySelector('.ev-track:nth-child(2) .ev-param') as HTMLElement;
-  const throttleParam  = document.querySelector('.ev-track:nth-child(3) .ev-param') as HTMLElement;
+  const paramDebounced = document.getElementById('param-debounced')!;
+  const paramThrottled = document.getElementById('param-throttled')!;
 
   const ANIM_DURATION = 2800;
   let cooldown = 500;
 
+  // ── Slider fill ──────────────────────────────────────────────
+  const updateSliderFill = () => {
+    const pct = ((cooldown - 50) / (2000 - 50)) * 100;
+    slider.style.setProperty('--fill-pct', pct.toFixed(1) + '%');
+  };
+  updateSliderFill();
+
   slider.addEventListener('input', () => {
     cooldown = parseInt(slider.value, 10);
     sliderOutput.textContent = cooldown + 'ms';
-    if (debounceParam) debounceParam.textContent = cooldown + 'ms';
-    if (throttleParam) throttleParam.textContent = cooldown + 'ms';
-    // Cancel any in-flight debounce so it respects the new timing
+    paramDebounced.textContent = cooldown + 'ms';
+    paramThrottled.textContent = cooldown + 'ms';
+    updateSliderFill();
     clearTimeout(debounceTimer);
+    laneDebounced.classList.remove('ev-lane--pending');
     lastFire = 0;
   });
 
@@ -489,8 +585,11 @@
   };
 
   const animateCooldown = (bar: HTMLElement) => {
+    const laneW = bar.parentElement!.clientWidth;
+    const ratio = Math.min(cooldown / ANIM_DURATION, 0.88);
+    const w     = Math.round(ratio * laneW);
     bar.style.transition = 'none';
-    bar.style.width = cooldown + 'px';
+    bar.style.width = w + 'px';
     bar.getBoundingClientRect();
     bar.style.transition = `width ${cooldown}ms linear`;
     bar.style.width = '0px';
@@ -502,7 +601,9 @@
   const handleDebounce = () => {
     clearTimeout(debounceTimer);
     animateCooldown(debounceBar);
+    laneDebounced.classList.add('ev-lane--pending');
     debounceTimer = setTimeout(() => {
+      laneDebounced.classList.remove('ev-lane--pending');
       spawnDot(laneDebounced, '#6ab97c');
       bump(countDebounced);
     }, cooldown);
@@ -524,28 +625,66 @@
   };
 
   // ── Main click ───────────────────────────────────────────────
-  trigger.addEventListener('click', () => {
+  const fire = () => {
     spawnDot(laneRaw, '#76b5f5');
     bump(countRaw);
     handleDebounce();
     handleThrottle();
+  };
+
+  trigger.addEventListener('click', fire);
+
+  // Spacebar shortcut
+  document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' && (e.target as HTMLElement).tagName !== 'INPUT') {
+      e.preventDefault();
+      trigger.classList.add('ev-trigger--pressed');
+      fire();
+      setTimeout(() => trigger.classList.remove('ev-trigger--pressed'), 100);
+    }
+  });
+
+  // ── Auto-fire ────────────────────────────────────────────────
+  let autoTimer: ReturnType<typeof setInterval> | undefined;
+
+  autoBtn.addEventListener('click', () => {
+    if (autoTimer) {
+      clearInterval(autoTimer);
+      autoTimer = undefined;
+      autoBtn.classList.remove('ev-auto--active');
+      autoBtn.innerHTML = autoBtn.innerHTML.replace('lucide:square', 'lucide:play');
+    } else {
+      autoTimer = setInterval(fire, 200);
+      autoBtn.classList.add('ev-auto--active');
+    }
   });
 
   // ── Reset ────────────────────────────────────────────────────
   resetBtn.addEventListener('click', () => {
+    // Stop auto-fire
+    if (autoTimer) {
+      clearInterval(autoTimer);
+      autoTimer = undefined;
+      autoBtn.classList.remove('ev-auto--active');
+    }
     [countRaw, countDebounced, countThrottled].forEach((el) => { el.textContent = '0'; });
     [laneRaw, laneDebounced, laneThrottled].forEach((lane) => {
       lane.querySelectorAll('.ev-dot').forEach((d) => d.remove());
     });
     clearTimeout(debounceTimer);
+    laneDebounced.classList.remove('ev-lane--pending');
     debounceBar.style.cssText = 'width:0';
     throttleBar.style.cssText = 'width:0';
     lastFire = 0;
-    // Reset slider to default
+    // Reset slider
     cooldown = 500;
     slider.value = '500';
     sliderOutput.textContent = '500ms';
-    if (debounceParam) debounceParam.textContent = '500ms';
-    if (throttleParam) throttleParam.textContent = '500ms';
+    paramDebounced.textContent = '500ms';
+    paramThrottled.textContent = '500ms';
+    updateSliderFill();
+    // Spin the icon
+    resetBtn.classList.add('ev-reset--spin');
+    resetBtn.addEventListener('animationend', () => resetBtn.classList.remove('ev-reset--spin'), { once: true });
   });
 </script>

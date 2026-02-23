@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { Icon } from 'astro-icon/components';
 ---
 
 <Layout
@@ -13,7 +14,7 @@ import Footer from '../components/Footer.astro';
   <main class="about-main">
     <div class="container">
       <a href="/" class="back-link">
-        <span class="back-arrow">←</span> all posts
+        <span class="back-arrow"><Icon name="lucide:arrow-left" size={14} /></span> all posts
       </a>
 
       <header class="about-header">
@@ -95,7 +96,12 @@ import Footer from '../components/Footer.astro';
 
   .back-link:hover { color: var(--color-gold); }
 
-  .back-arrow { transition: transform 0.2s ease; }
+  .back-arrow { 
+    transition: transform 0.2s ease; 
+    display: inline-flex;
+    align-items: center;
+  }
+
   .back-link:hover .back-arrow { transform: translateX(-3px); }
 
   /* ─── Page header ────────────────────────────────────────── */

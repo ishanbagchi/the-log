@@ -2,6 +2,7 @@
 import Layout from './Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { Icon } from 'astro-icon/components';
 
 interface Props {
   title: string;
@@ -33,7 +34,7 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
   <main class="post-wrapper">
     <article class="post-container">
       <a href="/" class="back-link">
-        <span class="back-arrow">←</span> All posts
+        <span class="back-arrow"><Icon name="lucide:arrow-left" size={14} /></span> All posts
       </a>
 
       <header class="post-header">
@@ -66,7 +67,10 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
       <div class="prose">
         <slot />
       </div>
-    </article>
+      <!-- icon templates for JS copy button -->
+  <span id="tpl-icon-copy" aria-hidden="true" style="display:none"><Icon name="lucide:copy" size={13} /></span>
+  <span id="tpl-icon-check" aria-hidden="true" style="display:none"><Icon name="lucide:check" size={13} /></span>
+</article>
   </main>
 
   <Footer />
@@ -98,6 +102,8 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
 
   .back-arrow {
     transition: transform 0.2s ease;
+    display: inline-flex;
+    align-items: center;
   }
 
   .back-link:hover .back-arrow {
@@ -281,10 +287,10 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
 
   /* Copy button — in toolbar, fades in on toolbar hover */
   .prose :global(.copy-btn) {
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.04em;
-    padding: 0.25em 0.75em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.3rem 0.4rem;
     border: 1px solid var(--color-border);
     border-radius: 4px;
     background: transparent;
@@ -396,10 +402,13 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
     langLabel.textContent = lang;
     toolbar.appendChild(langLabel);
 
+    const ICON_COPY = document.getElementById('tpl-icon-copy')!.innerHTML;
+    const ICON_CHECK = document.getElementById('tpl-icon-check')!.innerHTML;
     const copyBtn = document.createElement('button');
     copyBtn.className = 'copy-btn';
-    copyBtn.textContent = 'copy';
+    copyBtn.innerHTML = ICON_COPY;
     copyBtn.setAttribute('aria-label', 'Copy code to clipboard');
+    copyBtn.setAttribute('title', 'Copy');
     copyBtn.addEventListener('click', async () => {
       const text = Array.from(code.querySelectorAll<HTMLElement>('.line'))
         .map((l) => (l.textContent ?? '').replace('\u200b', ''))
@@ -407,15 +416,17 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
         .trimEnd();
       try {
         await navigator.clipboard.writeText(text);
-        copyBtn.textContent = 'copied!';
+        copyBtn.innerHTML = ICON_CHECK;
+        copyBtn.setAttribute('title', 'Copied!');
         copyBtn.classList.add('copy-btn--copied');
         setTimeout(() => {
-          copyBtn.textContent = 'copy';
+          copyBtn.innerHTML = ICON_COPY;
+          copyBtn.setAttribute('title', 'Copy');
           copyBtn.classList.remove('copy-btn--copied');
         }, 2000);
       } catch {
-        copyBtn.textContent = 'failed';
-        setTimeout(() => { copyBtn.textContent = 'copy'; }, 2000);
+        copyBtn.innerHTML = ICON_COPY;
+        setTimeout(() => { copyBtn.innerHTML = ICON_COPY; }, 2000);
       }
     });
     toolbar.appendChild(copyBtn);

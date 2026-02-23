@@ -3,6 +3,8 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
+import { Icon } from 'astro-icon/components';
+---
 ---
 
 <Layout title="Settings — The Log" description="Adjust your preferences for The Log.">
@@ -11,7 +13,7 @@ import ThemeToggle from '../components/ThemeToggle.astro';
   <main class="settings-main">
     <div class="container">
       <a href="/" class="back-link">
-        <span class="back-arrow">←</span> All posts
+        <span class="back-arrow"><Icon name="lucide:arrow-left" size={14} /></span> All posts
       </a>
 
       <header class="settings-header">
@@ -140,7 +142,12 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 
       <!-- ─── Reset ─────────────────────────────────────────── -->
       <div class="reset-row">
-        <button id="reset-all" class="reset-btn">↺ Reset all to defaults</button>
+        <button id="reset-all" class="reset-btn"><Icon name="lucide:rotate-ccw" size={14} /> Reset all to defaults</button>
+      </div>
+
+      <!-- icon templates for JS -->
+      <span id="tpl-icon-reset" aria-hidden="true" style="display:none"><Icon name="lucide:rotate-ccw" size={14} /></span>
+      <span id="tpl-icon-check" aria-hidden="true" style="display:none"><Icon name="lucide:check" size={14} /></span>
       </div>
 
       <!-- ─── About ─────────────────────────────────────── -->
@@ -246,12 +253,14 @@ import ThemeToggle from '../components/ThemeToggle.astro';
     (document.getElementById('toggle-line-numbers') as HTMLInputElement).checked = true;
 
     // Flash "Done" on the button
+    const iconReset = document.getElementById('tpl-icon-reset')!.innerHTML;
+    const iconCheck = document.getElementById('tpl-icon-check')!.innerHTML;
     const btn = document.getElementById('reset-all') as HTMLButtonElement;
-    btn.textContent = '✓ Done';
+    btn.innerHTML = `${iconCheck} Done`;
     btn.classList.add('done');
     btn.disabled = true;
     setTimeout(() => {
-      btn.textContent = '↺ Reset all to defaults';
+      btn.innerHTML = `${iconReset} Reset all to defaults`;
       btn.classList.remove('done');
       btn.disabled = false;
     }, 1800);
@@ -280,7 +289,12 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 
   .back-link:hover { color: var(--color-gold); }
 
-  .back-arrow { transition: transform 0.2s ease; }
+  .back-arrow {
+    transition: transform 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+  }
+
   .back-link:hover .back-arrow { transform: translateX(-3px); }
 
   /* ─── Page header ────────────────────────────────────────── */
@@ -518,6 +532,9 @@ import ThemeToggle from '../components/ThemeToggle.astro';
   }
 
   .reset-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
     font-family: var(--font-mono);
     font-size: 0.72rem;
     letter-spacing: 0.06em;
