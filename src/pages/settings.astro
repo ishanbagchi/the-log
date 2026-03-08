@@ -11,7 +11,7 @@ import { Icon } from 'astro-icon/components';
   <Header />
 
   <main class="settings-main">
-    <div class="container">
+    <div>
       <a href="/" class="back-link">
         <span class="back-arrow"><Icon name="lucide:arrow-left" size={14} /></span> All posts
       </a>
@@ -148,7 +148,6 @@ import { Icon } from 'astro-icon/components';
       <!-- icon templates for JS -->
       <span id="tpl-icon-reset" aria-hidden="true" style="display:none"><Icon name="lucide:rotate-ccw" size={14} /></span>
       <span id="tpl-icon-check" aria-hidden="true" style="display:none"><Icon name="lucide:check" size={14} /></span>
-      </div>
 
       <!-- ─── About ─────────────────────────────────────── -->
       <section class="settings-section">
@@ -270,8 +269,12 @@ import { Icon } from 'astro-icon/components';
 <style>
   .settings-main {
     flex: 1;
+    width: 100%;
+    max-width: 42rem;
+    margin-inline: auto;
     padding-top: var(--space-16);
     padding-bottom: var(--space-24);
+    padding-inline: var(--space-6);
   }
 
   /* ─── Back link ──────────────────────────────────────────── */
@@ -587,5 +590,53 @@ import { Icon } from 'astro-icon/components';
   .note code {
     font-size: 0.8em;
     color: var(--color-gold);
+  }
+
+  /* ─── Mobile ─────────────────────────────────────────────── */
+  @media (max-width: 600px) {
+    .settings-main {
+      padding-top: var(--space-8);
+    }
+
+    .settings-title {
+      font-size: 2rem;
+    }
+
+    .settings-sub {
+      font-size: 0.95rem;
+    }
+
+    .setting-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-6);
+    }
+
+    /* Control fills the full row width */
+    .seg-control {
+      width: 100%;
+      justify-content: stretch;
+    }
+
+    .seg-control button {
+      flex: 1;
+      text-align: center;
+      padding: 0.45em 0;
+    }
+
+    /* Push toggle to align with the left edge */
+    .toggle-switch {
+      align-self: flex-start;
+    }
+
+    .reset-row {
+      justify-content: stretch;
+    }
+
+    .reset-btn {
+      width: 100%;
+      justify-content: center;
+    }
   }
 </style>

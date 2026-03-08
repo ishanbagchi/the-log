@@ -32,6 +32,11 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
   <Header />
 
   <main class="post-wrapper">
+    <aside class="toc-sidebar" aria-label="Table of contents">
+      <p class="toc-title">On this page</p>
+      <nav class="toc"></nav>
+    </aside>
+
     <article class="post-container">
       <a href="/" class="back-link">
         <span class="back-arrow"><Icon name="lucide:arrow-left" size={14} /></span> All posts
@@ -79,8 +84,85 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
 <style>
   .post-wrapper {
     flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 3rem;
     padding-top: var(--space-16);
     padding-bottom: var(--space-24);
+    padding-inline: var(--space-6);
+  }
+
+  /* ─── TOC sidebar ────────────────────────────────────────── */
+  .toc-sidebar {
+    width: 190px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 5rem;
+    max-height: calc(100vh - 7rem);
+    overflow-y: auto;
+    scrollbar-width: none;
+    padding-top: var(--space-16);
+  }
+
+  .toc-sidebar::-webkit-scrollbar { display: none; }
+
+  .toc-title {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    opacity: 0.5;
+    margin-bottom: var(--space-3);
+    user-select: none;
+  }
+
+  .toc {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  :global(.toc-link) {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    opacity: 0.55;
+    padding: 0.25rem 0;
+    padding-left: 0.75rem;
+    border-left: 1px solid var(--color-border);
+    transition: color 0.15s ease, opacity 0.15s ease, border-color 0.15s ease;
+    text-decoration: none !important;
+    border-bottom: none !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  :global(.toc-link:hover) {
+    color: var(--color-text) !important;
+    opacity: 0.9;
+    border-color: var(--color-text-muted);
+  }
+
+  :global(.toc-h3) {
+    padding-left: 1.35rem;
+    font-size: 0.68rem;
+  }
+
+  :global(.toc-link.toc-active) {
+    color: var(--color-gold) !important;
+    opacity: 1;
+    border-left-color: var(--color-gold);
+  }
+
+  /* hide sidebar on narrow viewports */
+  @media (max-width: 1080px) {
+    .toc-sidebar { display: none; }
+    .post-wrapper { padding-inline: 0; }
   }
 
   /* ─── Back link ──────────────────────────────────────────── */
@@ -183,7 +265,7 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
   .post-container {
     width: 100%;
     max-width: var(--prose-max-width, 42rem);
-    margin-inline: auto;
+    flex-shrink: 1;
     padding-inline: var(--space-6);
   }
 
@@ -204,6 +286,7 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
     padding-bottom: var(--space-2);
     border-bottom: 1px solid var(--color-border-subtle);
     color: var(--color-text);
+    scroll-margin-top: 5.5rem;
   }
 
   .prose :global(h3) {
@@ -214,6 +297,7 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
     margin-top: var(--space-8);
     margin-bottom: var(--space-3);
     color: var(--color-text);
+    scroll-margin-top: 5.5rem;
   }
 
   .prose :global(h4) {
@@ -338,7 +422,6 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
     font-size: var(--code-font-size);
     line-height: 1.65;
     color: var(--color-text-muted);
-    opacity: 0.45;
     text-align: right;
     user-select: none;
     z-index: 10;
@@ -372,9 +455,98 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
     font-style: italic;
     color: var(--color-text-dim);
   }
+
+  /* ─── Mobile: compact code blocks ───────────────────────── */
+  @media (max-width: 640px) {
+    .prose :global(pre) {
+      border-radius: 4px;
+    }
+
+    .prose :global(.code-toolbar) {
+      padding: 0.4rem 0.75rem;
+      min-height: 2rem;
+    }
+
+    .prose :global(.code-scroll-area) {
+      padding: 0.75rem 0.75rem 0.75rem 0;
+      font-size: 0.75rem;
+    }
+
+    .prose :global(.ln) {
+      font-size: 0.7rem;
+      padding: 0 0.5rem;
+      min-width: 2rem;
+    }
+
+    .prose :global(.line) {
+      line-height: 1.55;
+    }
+  }
 </style>
 
 <script>
+  /* ── Table of Contents ──────────────────────────────────── */
+  (function () {
+    const sidebar = document.querySelector<HTMLElement>('.toc-sidebar');
+    const toc = document.querySelector<HTMLElement>('.toc');
+    if (!sidebar || !toc) return;
+
+    const headings = Array.from(
+      document.querySelectorAll<HTMLElement>('.prose h2, .prose h3')
+    );
+
+    if (headings.length === 0) { sidebar.remove(); return; }
+
+    // Ensure every heading has an id
+    headings.forEach((h) => {
+      if (!h.id) {
+        h.id = (h.textContent ?? '')
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-|-$/g, '');
+      }
+    });
+
+    // Build links
+    headings.forEach((h) => {
+      const a = document.createElement('a');
+      a.href = `#${h.id}`;
+      a.textContent = h.textContent ?? '';
+      a.className = `toc-link ${h.tagName === 'H3' ? 'toc-h3' : 'toc-h2'}`;
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById(h.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      toc.appendChild(a);
+    });
+
+    // Highlight active heading
+    const links = Array.from(toc.querySelectorAll<HTMLElement>('.toc-link'));
+    const setActive = (id: string) => {
+      links.forEach((l) => {
+        l.classList.toggle('toc-active', l.getAttribute('href') === `#${id}`);
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Pick the topmost visible heading
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible.length > 0) setActive((visible[0].target as HTMLElement).id);
+      },
+      { rootMargin: '0px 0px -70% 0px' }
+    );
+
+    headings.forEach((h) => observer.observe(h));
+
+    // Set first heading active on load
+    if (headings[0]?.id) setActive(headings[0].id);
+  })();
+
+  /* ── Code blocks ────────────────────────────────────────── */
   document.querySelectorAll<HTMLPreElement>('.prose pre').forEach((pre) => {
     const code = pre.querySelector<HTMLElement>('code');
     if (!code) return;
