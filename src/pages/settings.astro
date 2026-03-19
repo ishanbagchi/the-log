@@ -35,7 +35,6 @@ import { Icon } from 'astro-icon/components';
       <section class="settings-section">
         <h2 class="section-heading">Reading</h2>
         <div class="settings-card">
-
           <div class="setting-row">
             <div class="setting-info">
               <span class="setting-name">Font size</span>
@@ -82,7 +81,6 @@ import { Icon } from 'astro-icon/components';
               <span class="toggle-track"><span class="toggle-thumb"></span></span>
             </label>
           </div>
-
         </div>
       </section>
 
@@ -90,7 +88,6 @@ import { Icon } from 'astro-icon/components';
       <section class="settings-section">
         <h2 class="section-heading">Code blocks</h2>
         <div class="settings-card">
-
           <div class="setting-row">
             <div class="setting-info">
               <span class="setting-name">Code font size</span>
@@ -135,26 +132,55 @@ import { Icon } from 'astro-icon/components';
               <span class="toggle-track"><span class="toggle-thumb"></span></span>
             </label>
           </div>
-
         </div>
       </section>
 
       <!-- ─── Reset ─────────────────────────────────────────── -->
       <div class="reset-row">
-        <button id="reset-all" class="reset-btn"><Icon name="lucide:rotate-ccw" size={14} /> Reset all to defaults</button>
+        <button id="reset-all" class="reset-btn"
+          ><Icon name="lucide:rotate-ccw" size={14} /> Reset all to defaults</button
+        >
       </div>
 
       <!-- icon templates for JS -->
-      <span id="tpl-icon-reset" aria-hidden="true" style="display:none"><Icon name="lucide:rotate-ccw" size={14} /></span>
-      <span id="tpl-icon-check" aria-hidden="true" style="display:none"><Icon name="lucide:check" size={14} /></span>
+      <span id="tpl-icon-reset" aria-hidden="true" style="display:none"
+        ><Icon name="lucide:rotate-ccw" size={14} /></span
+      >
+      <span id="tpl-icon-check" aria-hidden="true" style="display:none"
+        ><Icon name="lucide:check" size={14} /></span
+      >
+      <!-- ─── Keyboard shortcuts ────────────────────────────── -->
+      <section class="settings-section" id="shortcuts">
+        <h2 class="section-heading">Keyboard shortcuts</h2>
+        <p class="shortcuts-note">Active when focus is not inside a text field.</p>
+        <div class="settings-card">
+          <div class="shortcut-row">
+            <kbd>T</kbd>
+            <span class="shortcut-desc">Toggle light / dark theme</span>
+          </div>
 
+          <div class="shortcut-row">
+            <kbd>S</kbd>
+            <span class="shortcut-desc">Focus the search box</span>
+          </div>
+
+          <div class="shortcut-row">
+            <kbd>G</kbd>
+            <span class="shortcut-desc">Go to the post list</span>
+          </div>
+
+          <div class="shortcut-row">
+            <kbd>?</kbd>
+            <span class="shortcut-desc">Open this shortcuts reference</span>
+          </div>
+        </div>
+      </section>
       <!-- ─── About ─────────────────────────────────────── -->
       <section class="settings-section">
         <h2 class="section-heading">About these settings</h2>
         <p class="note">
-          Settings are stored in <code>localStorage</code> on your device.
-          No data is sent to any server. Clearing your browser storage will
-          reset all preferences to their defaults.
+          Settings are stored in <code>localStorage</code> on your device. No data is sent to any server.
+          Clearing your browser storage will reset all preferences to their defaults.
         </p>
       </section>
     </div>
@@ -222,16 +248,22 @@ import { Icon } from 'astro-icon/components';
   /* ─── Reset all ─────────────────────────────────────────── */
   document.getElementById('reset-all')!.addEventListener('click', () => {
     const keys = [
-      'prose-font-size', 'prose-line-height', 'prose-max-width', 'code-font-size',
-      'show-reading-time', 'wrap-code', 'show-lang-label', 'show-line-numbers',
+      'prose-font-size',
+      'prose-line-height',
+      'prose-max-width',
+      'code-font-size',
+      'show-reading-time',
+      'wrap-code',
+      'show-lang-label',
+      'show-line-numbers',
     ];
     keys.forEach((k) => localStorage.removeItem(k));
 
     // Reset CSS variables explicitly to their defaults
-    html.style.setProperty('--prose-font-size',   '1.0625rem');
+    html.style.setProperty('--prose-font-size', '1.0625rem');
     html.style.setProperty('--prose-line-height', '1.85');
-    html.style.setProperty('--prose-max-width',   '42rem');
-    html.style.setProperty('--code-font-size',    '0.875rem');
+    html.style.setProperty('--prose-max-width', '42rem');
+    html.style.setProperty('--code-font-size', '0.875rem');
 
     // Reset classes
     html.classList.remove('hide-reading-time', 'wrap-code', 'hide-lang-label', 'hide-line-numbers');
@@ -239,9 +271,9 @@ import { Icon } from 'astro-icon/components';
     // Re-run seg controls so buttons reflect defaults
     document.querySelectorAll<HTMLDivElement>('.seg-control').forEach((ctrl) => {
       const def = ctrl.dataset.default!;
-      ctrl.querySelectorAll<HTMLButtonElement>('button').forEach((b) =>
-        b.classList.toggle('active', b.dataset.val === def)
-      );
+      ctrl
+        .querySelectorAll<HTMLButtonElement>('button')
+        .forEach((b) => b.classList.toggle('active', b.dataset.val === def));
     });
 
     // Reset toggle checkboxes
@@ -289,7 +321,9 @@ import { Icon } from 'astro-icon/components';
     margin-bottom: var(--space-12);
   }
 
-  .back-link:hover { color: var(--color-gold); }
+  .back-link:hover {
+    color: var(--color-gold);
+  }
 
   .back-arrow {
     transition: transform 0.2s ease;
@@ -297,7 +331,9 @@ import { Icon } from 'astro-icon/components';
     align-items: center;
   }
 
-  .back-link:hover .back-arrow { transform: translateX(-3px); }
+  .back-link:hover .back-arrow {
+    transform: translateX(-3px);
+  }
 
   /* ─── Page header ────────────────────────────────────────── */
   .settings-header {
@@ -352,7 +388,9 @@ import { Icon } from 'astro-icon/components';
     border-radius: 8px;
     background: var(--color-surface);
     overflow: hidden;
-    transition: border-color 0.25s ease, background 0.25s ease;
+    transition:
+      border-color 0.25s ease,
+      background 0.25s ease;
   }
 
   /* ─── Setting row ────────────────────────────────────────── */
@@ -366,14 +404,16 @@ import { Icon } from 'astro-icon/components';
     transition: background 0.15s ease;
   }
 
-  .setting-row:last-child { border-bottom: none; }
+  .setting-row:last-child {
+    border-bottom: none;
+  }
 
   .setting-row:hover {
-    background: rgba(255,255,255,0.015);
+    background: rgba(255, 255, 255, 0.015);
   }
 
   [data-theme='light'] .setting-row:hover {
-    background: rgba(0,0,0,0.018);
+    background: rgba(0, 0, 0, 0.018);
   }
 
   .setting-info {
@@ -418,8 +458,11 @@ import { Icon } from 'astro-icon/components';
     border: none;
     border-radius: 3px;
     cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease,
-                box-shadow 0.15s ease, transform 0.1s ease;
+    transition:
+      background 0.15s ease,
+      color 0.15s ease,
+      box-shadow 0.15s ease,
+      transform 0.1s ease;
     white-space: nowrap;
   }
 
@@ -427,7 +470,7 @@ import { Icon } from 'astro-icon/components';
     color: var(--color-text);
     background: var(--color-surface);
     transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
   }
 
   .seg-control button:active {
@@ -443,7 +486,9 @@ import { Icon } from 'astro-icon/components';
   }
 
   .seg-control button.active:hover {
-    box-shadow: 0 0 0 1px var(--color-gold), 0 2px 8px rgba(200, 169, 110, 0.15);
+    box-shadow:
+      0 0 0 1px var(--color-gold),
+      0 2px 8px rgba(200, 169, 110, 0.15);
     transform: translateY(-1px);
   }
 
@@ -480,7 +525,10 @@ import { Icon } from 'astro-icon/components';
     background: var(--color-border);
     border-radius: 999px;
     border: 1px solid var(--color-border);
-    transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.2s ease;
+    transition:
+      background 0.25s ease,
+      border-color 0.25s ease,
+      box-shadow 0.2s ease;
   }
 
   .toggle-switch:hover .toggle-track {
@@ -502,7 +550,11 @@ import { Icon } from 'astro-icon/components';
     height: 1rem;
     background: var(--color-text-muted);
     border-radius: 50%;
-    transition: transform 0.25s ease, background 0.25s ease, width 0.15s ease, height 0.15s ease;
+    transition:
+      transform 0.25s ease,
+      background 0.25s ease,
+      width 0.15s ease,
+      height 0.15s ease;
     will-change: transform;
   }
 
@@ -547,9 +599,12 @@ import { Icon } from 'astro-icon/components';
     border: 1px solid var(--color-border);
     border-radius: 4px;
     cursor: pointer;
-    transition: color 0.2s ease, border-color 0.2s ease,
-                background 0.2s ease, transform 0.15s ease,
-                box-shadow 0.2s ease;
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease,
+      background 0.2s ease,
+      transform 0.15s ease,
+      box-shadow 0.2s ease;
   }
 
   .reset-btn:hover {
@@ -591,8 +646,73 @@ import { Icon } from 'astro-icon/components';
     color: var(--color-gold);
   }
 
+  /* ─── Keyboard shortcuts ──────────────────────────────────── */
+  .shortcuts-note {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-4);
+  }
+
+  .shortcut-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-6);
+    border-bottom: 1px solid var(--color-border-subtle);
+    transition: background 0.15s ease;
+  }
+
+  .shortcut-row:last-child {
+    border-bottom: none;
+  }
+
+  .shortcut-row:hover {
+    background: rgba(255, 255, 255, 0.015);
+  }
+
+  [data-theme='light'] .shortcut-row:hover {
+    background: rgba(0, 0, 0, 0.018);
+  }
+
+  .shortcut-row:hover kbd {
+    border-color: var(--color-gold);
+    box-shadow:
+      0 1px 0 var(--color-gold),
+      0 0 8px rgba(200, 169, 110, 0.15);
+  }
+
+  kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--color-gold);
+    background: var(--color-bg);
+    border: 1px solid var(--color-gold-dim);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    box-shadow: 0 1px 0 var(--color-gold-dim);
+    flex-shrink: 0;
+  }
+
+  .shortcut-desc {
+    font-size: 0.9375rem;
+    color: var(--color-text-dim);
+  }
+
   /* ─── Mobile ─────────────────────────────────────────────── */
   @media (max-width: 600px) {
+    #shortcuts {
+      display: none;
+    }
+
     .settings-main {
       padding-top: var(--space-8);
     }

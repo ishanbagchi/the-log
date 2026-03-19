@@ -86,6 +86,67 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   <body>
     <slot />
     <Analytics />
+
+    <script>
+      function setupKeyboardShortcuts() {
+        function onKeyDown(e: KeyboardEvent) {
+          const target = e.target as HTMLElement;
+          if (
+            target.tagName === 'INPUT' ||
+            target.tagName === 'TEXTAREA' ||
+            target.tagName === 'SELECT' ||
+            target.isContentEditable
+          )
+            return;
+          if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+          switch (e.key) {
+            case 't':
+            case 'T': {
+              e.preventDefault();
+              const html = document.documentElement;
+              const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+              html.setAttribute('data-theme', next);
+              localStorage.setItem('theme', next);
+              break;
+            }
+            case 's':
+            case 'S': {
+              e.preventDefault();
+              const input = document.getElementById('search-input') as HTMLInputElement | null;
+              if (input) {
+                input.focus();
+                input.select();
+              } else {
+                window.location.href = '/';
+                sessionStorage.setItem('focus-search', '1');
+              }
+              break;
+            }
+            case 'g':
+            case 'G': {
+              e.preventDefault();
+              window.location.href = '/';
+              break;
+            }
+            case '?': {
+              e.preventDefault();
+              window.location.href = '/settings#shortcuts';
+              break;
+            }
+          }
+        }
+
+        document.addEventListener('keydown', onKeyDown);
+        return () => document.removeEventListener('keydown', onKeyDown);
+      }
+
+      let cleanup = setupKeyboardShortcuts();
+      document.addEventListener('astro:before-swap', () => cleanup?.());
+      document.addEventListener('astro:after-swap', () => {
+        cleanup = setupKeyboardShortcuts();
+      });
+    </script>
   </body>
 </html>
 

@@ -67,5 +67,5 @@ A running list of features, fixes, and improvements to add to the site.
 - [ ] **Newsletter signup** — embed a simple email capture form (Buttondown, ConvertKit, etc.).
 - [ ] **Post reactions / likes** — a lightweight "found this helpful?" interaction, could be backed by a serverless function or a service like [lyket](https://lyket.dev).
 - [ ] **Comments** — integrate a privacy-friendly comment system (Giscus via GitHub Discussions is a good fit for a developer blog).
-- [ ] **Keyboard shortcuts** — `T` to toggle theme, `S` to jump to search, etc.
+- [x] **Keyboard shortcuts** — `T` to toggle theme, `S` to jump to search, etc.
 - [ ] **Print stylesheet** — clean print CSS so posts look good when saved as PDF.
