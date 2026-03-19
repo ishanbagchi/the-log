@@ -23,7 +23,16 @@ interface Props {
   relatedPosts?: RelatedPost[];
 }
 
-const { title, description, pubDate, updatedDate, tags = [], readingTime, ogImage, relatedPosts = [] } = Astro.props;
+const {
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  tags = [],
+  readingTime,
+  ogImage,
+  relatedPosts = [],
+} = Astro.props;
 
 const formattedPubDate = pubDate.toLocaleDateString('en-US', {
   year: 'numeric',
@@ -56,54 +65,66 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
       <header class="post-header">
         <div class="post-meta">
           <time datetime={pubDate.toISOString()}>{formattedPubDate}</time>
-          {updatedDate && (
-            <span class="updated">
-              · Updated <time datetime={updatedDate.toISOString()}>{formattedUpdatedDate}</time>
-            </span>
-          )}
-          {readingTime && (
-            <span class="reading-time">· {readingTime} min read</span>
-          )}
+          {
+            updatedDate && (
+              <span class="updated">
+                · Updated <time datetime={updatedDate.toISOString()}>{formattedUpdatedDate}</time>
+              </span>
+            )
+          }
+          {readingTime && <span class="reading-time">· {readingTime} min read</span>}
         </div>
 
         <h1 class="post-title display-serif">{title}</h1>
         <p class="post-description">{description}</p>
 
-        {tags.length > 0 && (
-          <div class="post-tags">
-            {tags.map((tag) => (
-              <span class="tag">{tag}</span>
-            ))}
-          </div>
-        )}
+        {
+          tags.length > 0 && (
+            <div class="post-tags">
+              {tags.map((tag) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+          )
+        }
 
-        <div class="post-divider" />
+        <div class="post-divider"></div>
       </header>
 
       <div class="prose">
         <slot />
       </div>
       <!-- icon templates for JS copy button -->
-  <span id="tpl-icon-copy" aria-hidden="true" style="display:none"><Icon name="lucide:copy" size={13} /></span>
-  <span id="tpl-icon-check" aria-hidden="true" style="display:none"><Icon name="lucide:check" size={13} /></span>
+      <span id="tpl-icon-copy" aria-hidden="true" style="display:none"
+        ><Icon name="lucide:copy" size={13} /></span
+      >
+      <span id="tpl-icon-check" aria-hidden="true" style="display:none"
+        ><Icon name="lucide:check" size={13} /></span
+      >
 
-      {relatedPosts.length > 0 && (
-        <section class="related-posts">
-          <p class="related-label">// continue reading</p>
-          <div class="related-grid">
-            {relatedPosts.map((rp) => (
-              <a href={`/log/${rp.slug}`} class="related-card">
-                <time class="related-date" datetime={rp.pubDate.toISOString()}>
-                  {rp.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-                </time>
-                <p class="related-title">{rp.title}</p>
-                <p class="related-desc">{rp.description}</p>
-              </a>
-            ))}
-          </div>
-        </section>
-      )}
-</article>
+      {
+        relatedPosts.length > 0 && (
+          <section class="related-posts">
+            <p class="related-label">// continue reading</p>
+            <div class="related-grid">
+              {relatedPosts.map((rp) => (
+                <a href={`/log/${rp.slug}`} class="related-card">
+                  <time class="related-date" datetime={rp.pubDate.toISOString()}>
+                    {rp.pubDate.toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                    })}
+                  </time>
+                  <p class="related-title">{rp.title}</p>
+                  <p class="related-desc">{rp.description}</p>
+                </a>
+              ))}
+            </div>
+          </section>
+        )
+      }
+    </article>
   </main>
 
   <Footer />
@@ -137,7 +158,9 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
     padding-top: var(--space-16);
   }
 
-  .toc-sidebar::-webkit-scrollbar { display: none; }
+  .toc-sidebar::-webkit-scrollbar {
+    display: none;
+  }
 
   .toc-title {
     font-family: var(--font-mono);
@@ -166,7 +189,10 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
     padding: 0.25rem 0;
     padding-left: 0.75rem;
     border-left: 1px solid var(--color-border);
-    transition: color 0.15s ease, opacity 0.15s ease, border-color 0.15s ease;
+    transition:
+      color 0.15s ease,
+      opacity 0.15s ease,
+      border-color 0.15s ease;
     text-decoration: none !important;
     border-bottom: none !important;
     white-space: nowrap;
@@ -193,8 +219,12 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
 
   /* hide sidebar on narrow viewports */
   @media (max-width: 1080px) {
-    .toc-sidebar { display: none; }
-    .post-wrapper { padding-inline: 0; }
+    .toc-sidebar {
+      display: none;
+    }
+    .post-wrapper {
+      padding-inline: 0;
+    }
   }
 
   /* ─── Back link ──────────────────────────────────────────── */
@@ -284,12 +314,7 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
 
   .post-divider {
     height: 1px;
-    background: linear-gradient(
-      to right,
-      var(--color-gold-dim),
-      var(--color-border),
-      transparent
-    );
+    background: linear-gradient(to right, var(--color-gold-dim), var(--color-border), transparent);
     margin-top: var(--space-8);
   }
 
@@ -361,7 +386,9 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
   .prose :global(a) {
     color: var(--color-gold);
     border-bottom: 1px solid var(--color-gold-dim);
-    transition: border-color 0.2s ease, color 0.2s ease;
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease;
   }
 
   .prose :global(a:hover) {
@@ -370,7 +397,7 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
   }
 
   /* ─── Code block: restructured layout ──────────────────────────── */
-  
+
   /* pre = outer shell (no scroll); toolbar + scroll-area inside */
   .prose :global(pre) {
     position: relative;
@@ -413,10 +440,15 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
     color: var(--color-text-muted);
     cursor: pointer;
     opacity: 0.5;
-    transition: opacity 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    transition:
+      opacity 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease;
   }
 
-  .prose :global(.code-toolbar:hover .copy-btn) { opacity: 1; }
+  .prose :global(.code-toolbar:hover .copy-btn) {
+    opacity: 1;
+  }
 
   .prose :global(.copy-btn:hover) {
     color: var(--color-gold);
@@ -443,7 +475,7 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
    */
   .prose :global(.code-grid) {
     display: grid;
-    grid-template-columns: minmax(2.5rem, max-content) 1fr; 
+    grid-template-columns: minmax(2.5rem, max-content) 1fr;
     column-gap: 1rem;
   }
 
@@ -464,10 +496,12 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
 
   /* Background is set globally in Layout.astro to match Shiki theme */
 
-  .prose :global(.line-nums) { display: none; }
+  .prose :global(.line-nums) {
+    display: none;
+  }
 
   .prose :global(pre code) {
-    display: block; 
+    display: block;
   }
 
   .prose :global(.line) {
@@ -519,7 +553,11 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
     cursor: pointer;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.25s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    transition:
+      opacity 0.25s ease,
+      color 0.2s ease,
+      border-color 0.2s ease,
+      transform 0.2s ease;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     z-index: 150;
@@ -633,181 +671,192 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
 </style>
 
 <script>
-  /* ── Table of Contents ──────────────────────────────────── */
-  (function () {
-    const sidebar = document.querySelector<HTMLElement>('.toc-sidebar');
-    const toc = document.querySelector<HTMLElement>('.toc');
-    if (!sidebar || !toc) return;
+  document.addEventListener('astro:page-load', () => {
+    /* ── Table of Contents ────────────────────────────────── */
+    (function () {
+      const sidebar = document.querySelector<HTMLElement>('.toc-sidebar');
+      const toc = document.querySelector<HTMLElement>('.toc');
+      if (!sidebar || !toc) return;
 
-    const headings = Array.from(
-      document.querySelectorAll<HTMLElement>('.prose h2, .prose h3')
-    );
+      const headings = Array.from(document.querySelectorAll<HTMLElement>('.prose h2, .prose h3'));
 
-    if (headings.length === 0) { sidebar.remove(); return; }
-
-    // Ensure every heading has an id
-    headings.forEach((h) => {
-      if (!h.id) {
-        h.id = (h.textContent ?? '')
-          .trim()
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, '-')
-          .replace(/^-|-$/g, '');
+      if (headings.length === 0) {
+        sidebar.style.visibility = 'hidden';
+        return;
       }
-    });
 
-    // Build links
-    headings.forEach((h) => {
-      const a = document.createElement('a');
-      a.href = `#${h.id}`;
-      a.textContent = h.textContent ?? '';
-      a.className = `toc-link ${h.tagName === 'H3' ? 'toc-h3' : 'toc-h2'}`;
-      a.addEventListener('click', (e) => {
-        e.preventDefault();
-        document.getElementById(h.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Ensure every heading has an id
+      headings.forEach((h) => {
+        if (!h.id) {
+          h.id = (h.textContent ?? '')
+            .trim()
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-|-$/g, '');
+        }
       });
-      toc.appendChild(a);
-    });
 
-    // Highlight active heading
-    const links = Array.from(toc.querySelectorAll<HTMLElement>('.toc-link'));
-    const setActive = (id: string) => {
-      links.forEach((l) => {
-        l.classList.toggle('toc-active', l.getAttribute('href') === `#${id}`);
+      // Build links
+      headings.forEach((h) => {
+        const a = document.createElement('a');
+        a.href = `#${h.id}`;
+        a.textContent = h.textContent ?? '';
+        a.className = `toc-link ${h.tagName === 'H3' ? 'toc-h3' : 'toc-h2'}`;
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          document.getElementById(h.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+        toc.appendChild(a);
       });
-    };
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        // Pick the topmost visible heading
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible.length > 0) setActive((visible[0].target as HTMLElement).id);
-      },
-      { rootMargin: '0px 0px -70% 0px' }
-    );
+      // Highlight active heading
+      const links = Array.from(toc.querySelectorAll<HTMLElement>('.toc-link'));
+      const setActive = (id: string) => {
+        links.forEach((l) => {
+          l.classList.toggle('toc-active', l.getAttribute('href') === `#${id}`);
+        });
+      };
 
-    headings.forEach((h) => observer.observe(h));
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries
+            .filter((e) => e.isIntersecting)
+            .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+          if (visible.length > 0) setActive((visible[0].target as HTMLElement).id);
+        },
+        { rootMargin: '0px 0px -70% 0px' },
+      );
 
-    // Set first heading active on load
-    if (headings[0]?.id) setActive(headings[0].id);
-  })();
+      headings.forEach((h) => observer.observe(h));
+      if (headings[0]?.id) setActive(headings[0].id);
 
-  /* ── Code blocks ────────────────────────────────────────── */
-  document.querySelectorAll<HTMLPreElement>('.prose pre').forEach((pre) => {
-    const code = pre.querySelector<HTMLElement>('code');
-    if (!code) return;
-    const lang = pre.getAttribute('data-language') ?? '';
+      // Disconnect observer on navigation
+      document.addEventListener('astro:before-swap', () => observer.disconnect(), { once: true });
+    })();
 
-    // ── 1. Ensure lines are wrapped in .line spans ──────────────────
-    if (!code.querySelector('.line')) {
-      const rawLines = code.innerHTML.split('\n');
-      if (rawLines.at(-1) === '') rawLines.pop();
-      code.innerHTML = rawLines
-        .map((l) => `<span class="line">${l === '' ? '\u200b' : l}</span>`)
-        .join('');
-    } else {
-      code.querySelectorAll<HTMLElement>('.line').forEach((ln) => {
-        if (!ln.textContent?.trim()) ln.innerHTML = '\u200b';
-      });
-    }
+    /* ── Code blocks ──────────────────────────────────────── */
+    document.querySelectorAll<HTMLPreElement>('.prose pre:not([data-enhanced])').forEach((pre) => {
+      pre.setAttribute('data-enhanced', '1');
+      const code = pre.querySelector<HTMLElement>('code');
+      if (!code) return;
+      const lang = pre.getAttribute('data-language') ?? '';
 
-    // ── 2. Build toolbar (lang label + copy button) ──────────────
-    const toolbar = document.createElement('div');
-    toolbar.className = 'code-toolbar';
+      // 1. Ensure lines are wrapped in .line spans
+      if (!code.querySelector('.line')) {
+        const rawLines = code.innerHTML.split('\n');
+        if (rawLines.at(-1) === '') rawLines.pop();
+        code.innerHTML = rawLines
+          .map((l) => `<span class="line">${l === '' ? '\u200b' : l}</span>`)
+          .join('');
+      } else {
+        code.querySelectorAll<HTMLElement>('.line').forEach((ln) => {
+          if (!ln.textContent?.trim()) ln.innerHTML = '\u200b';
+        });
+      }
 
-    const langLabel = document.createElement('span');
-    langLabel.className = 'code-lang-label';
-    langLabel.textContent = lang;
-    toolbar.appendChild(langLabel);
+      // 2. Build toolbar (lang label + copy button)
+      const toolbar = document.createElement('div');
+      toolbar.className = 'code-toolbar';
 
-    const ICON_COPY = document.getElementById('tpl-icon-copy')!.innerHTML;
-    const ICON_CHECK = document.getElementById('tpl-icon-check')!.innerHTML;
-    const copyBtn = document.createElement('button');
-    copyBtn.className = 'copy-btn';
-    copyBtn.innerHTML = ICON_COPY;
-    copyBtn.setAttribute('aria-label', 'Copy code to clipboard');
-    copyBtn.setAttribute('title', 'Copy');
-    copyBtn.addEventListener('click', async () => {
-      const text = Array.from(code.querySelectorAll<HTMLElement>('.line'))
-        .map((l) => (l.textContent ?? '').replace('\u200b', ''))
-        .join('\n')
-        .trimEnd();
-      try {
-        await navigator.clipboard.writeText(text);
-        copyBtn.innerHTML = ICON_CHECK;
-        copyBtn.setAttribute('title', 'Copied!');
-        copyBtn.classList.add('copy-btn--copied');
-        setTimeout(() => {
+      const langLabel = document.createElement('span');
+      langLabel.className = 'code-lang-label';
+      langLabel.textContent = lang;
+      toolbar.appendChild(langLabel);
+
+      const ICON_COPY = document.getElementById('tpl-icon-copy')!.innerHTML;
+      const ICON_CHECK = document.getElementById('tpl-icon-check')!.innerHTML;
+      const copyBtn = document.createElement('button');
+      copyBtn.className = 'copy-btn';
+      copyBtn.innerHTML = ICON_COPY;
+      copyBtn.setAttribute('aria-label', 'Copy code to clipboard');
+      copyBtn.setAttribute('title', 'Copy');
+      copyBtn.addEventListener('click', async () => {
+        const text = Array.from(code.querySelectorAll<HTMLElement>('.line'))
+          .map((l) => (l.textContent ?? '').replace('\u200b', ''))
+          .join('\n')
+          .trimEnd();
+        try {
+          await navigator.clipboard.writeText(text);
+          copyBtn.innerHTML = ICON_CHECK;
+          copyBtn.setAttribute('title', 'Copied!');
+          copyBtn.classList.add('copy-btn--copied');
+          setTimeout(() => {
+            copyBtn.innerHTML = ICON_COPY;
+            copyBtn.setAttribute('title', 'Copy');
+            copyBtn.classList.remove('copy-btn--copied');
+          }, 2000);
+        } catch {
           copyBtn.innerHTML = ICON_COPY;
-          copyBtn.setAttribute('title', 'Copy');
-          copyBtn.classList.remove('copy-btn--copied');
-        }, 2000);
-      } catch {
-        copyBtn.innerHTML = ICON_COPY;
-        setTimeout(() => { copyBtn.innerHTML = ICON_COPY; }, 2000);
+          setTimeout(() => {
+            copyBtn.innerHTML = ICON_COPY;
+          }, 2000);
+        }
+      });
+      toolbar.appendChild(copyBtn);
+
+      // 3. Rebuild code as a grid: paired .ln + .line per row
+      const lineSpans = Array.from(code.querySelectorAll<HTMLElement>('.line'));
+      code.innerHTML = '';
+      code.className = (code.className + ' code-grid').trim();
+
+      lineSpans.forEach((lineEl, i) => {
+        const ln = document.createElement('span');
+        ln.className = 'ln';
+        ln.setAttribute('aria-hidden', 'true');
+        ln.textContent = String(i + 1);
+        code.appendChild(ln);
+        code.appendChild(lineEl);
+      });
+
+      // 4. Scrollable area wraps code
+      const scrollArea = document.createElement('div');
+      scrollArea.className = 'code-scroll-area';
+      scrollArea.appendChild(code);
+
+      // 5. Rebuild <pre>: toolbar on top, scroll area below
+      pre.innerHTML = '';
+      pre.appendChild(toolbar);
+      pre.appendChild(scrollArea);
+    });
+
+    /* ── Reading progress + back-to-top ───────────────────── */
+    const bar = document.getElementById('reading-progress');
+    const btn = document.getElementById('back-to-top');
+    let rafPending = false;
+
+    function updateBar() {
+      rafPending = false;
+      if (bar) {
+        const el = document.documentElement;
+        const scrolled = el.scrollTop / (el.scrollHeight - el.clientHeight) || 0;
+        bar.style.transform = `scaleX(${Math.min(1, scrolled)})`;
       }
+      if (btn) {
+        btn.classList.toggle('visible', window.scrollY > 500);
+      }
+    }
+
+    function onScroll() {
+      if (!rafPending) {
+        rafPending = true;
+        requestAnimationFrame(updateBar);
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    btn?.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
-    toolbar.appendChild(copyBtn);
 
-    // ── 3. Rebuild code as a grid: paired .ln + .line per row ───
-    const lineSpans = Array.from(code.querySelectorAll<HTMLElement>('.line'));
-    code.innerHTML = '';
-    code.className = (code.className + ' code-grid').trim();
-
-    lineSpans.forEach((lineEl, i) => {
-      const ln = document.createElement('span');
-      ln.className = 'ln';
-      ln.setAttribute('aria-hidden', 'true');
-      ln.textContent = String(i + 1);
-      code.appendChild(ln);
-      code.appendChild(lineEl);
-    });
-
-    // ── 4. Scrollable area wraps code ────────────────────────────
-    const scrollArea = document.createElement('div');
-    scrollArea.className = 'code-scroll-area';
-    scrollArea.appendChild(code);
-
-    // ── 5. Rebuild <pre>: toolbar on top, scroll area below ──────
-    pre.innerHTML = '';
-    pre.appendChild(toolbar);
-    pre.appendChild(scrollArea);
+    // Reset progress bar to 0 before next navigation
+    document.addEventListener(
+      'astro:before-swap',
+      () => {
+        window.removeEventListener('scroll', onScroll);
+        if (bar) bar.style.transform = 'scaleX(0)';
+      },
+      { once: true },
+    );
   });
-</script>
-
-<script>
-  const bar = document.getElementById('reading-progress');
-  const btn = document.getElementById('back-to-top');
-  let rafPending = false;
-
-  function updateBar() {
-    rafPending = false;
-    if (bar) {
-      const el = document.documentElement;
-      const scrolled = el.scrollTop / (el.scrollHeight - el.clientHeight) || 0;
-      bar.style.transform = `scaleX(${Math.min(1, scrolled)})`;
-    }
-    if (btn) {
-      btn.classList.toggle('visible', window.scrollY > 500);
-    }
-  }
-
-  function onScroll() {
-    if (!rafPending) {
-      rafPending = true;
-      requestAnimationFrame(updateBar);
-    }
-  }
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-
-  btn?.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-
-  document.addEventListener('astro:before-swap', () => {
-    window.removeEventListener('scroll', onScroll);
-  }, { once: true });
 </script>

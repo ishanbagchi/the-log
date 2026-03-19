@@ -32,6 +32,14 @@ A running list of features, fixes, and improvements to add to the site.
 - [x] **Reading progress bar** — a thin bar at the top of the viewport that fills as you scroll through a post.
 - [x] **Back-to-top button** — appears after scrolling down, smoothly scrolls back to top.
 - [x] **Estimated reading time on blog cards** — surface reading time directly on `BlogCard` so users can gauge length before clicking.
+- [ ] **Previous / Next post navigation** — chronological prev/next links at the bottom of each post so readers can move through the archive without going back to the list.
+- [ ] **Shareable heading anchors** — auto-generated `#` anchor icons on `h2`/`h3` headings (via `rehype-autolink-headings`) so readers can link to a specific section.
+- [ ] **Tag pages** — dedicated `/tag/[tag]` routes that are linkable and crawlable; currently tag filtering only works client-side on the home page.
+- [ ] **Active section highlight in TOC** — as the reader scrolls, highlight the currently visible heading in the TOC sidebar using an `IntersectionObserver`.
+- [ ] **Year grouping on home page** — group the post list by calendar year with a subtle year label, making the archive easier to scan as it grows.
+- [ ] **Social share strip** — a small row at the end of each post with a "Copy link" button and a "Share on X" link.
+- [ ] **Skip-to-content link** — a visually hidden `<a href="#main">Skip to content</a>` that becomes visible on focus, for keyboard and screen-reader users.
+- [ ] **Smooth-scroll to hash on load** — when arriving at a URL with a `#` fragment (TOC links, `/settings#shortcuts`, heading anchors), scroll smoothly instead of jumping.
 
 ---
 
