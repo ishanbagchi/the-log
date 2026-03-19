@@ -55,10 +55,10 @@ A running list of features, fixes, and improvements to add to the site.
 
 ## Developer Experience
 
-- [ ] **Prettier / ESLint config** — add consistent formatting rules so contributors (or future-you) don't bikeshed on style.
+- [x] **Prettier / ESLint config** — add consistent formatting rules so contributors (or future-you) don't bikeshed on style.
+- [x] **Content drafts workflow** — document or script a way to create a new draft post from a template file.
+- [x] **Update README** — replace the default Astro starter README with one that describes this specific project, its conventions, and how to add a new post.
 - [ ] **Deploy preview comments** — set up Vercel preview deployments with branch comments so you can review posts before merging.
-- [ ] **Content drafts workflow** — document or script a way to create a new draft post from a template file.
-- [ ] **Update README** — replace the default Astro starter README with one that describes this specific project, its conventions, and how to add a new post.
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-import Analytics from '@vercel/analytics/astro'
+import Analytics from '@vercel/analytics/astro';
 import { ClientRouter } from 'astro:transitions';
 
 interface Props {
@@ -15,7 +15,7 @@ const {
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://ishanbagchi.com');
-const base = import.meta.env.BASE_URL.replace(/\/$/, ""); 
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <!doctype html>
@@ -23,6 +23,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href={`${base}/favicon.ico`} sizes="32x32" />
+    <link rel="icon" type="image/png" href={`${base}/favicon.png`} sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
     <link rel="canonical" href={canonicalURL} />
     <meta name="generator" content={Astro.generator} />
@@ -42,7 +44,12 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     <meta name="twitter:description" content={description} />
     {ogImage && <meta name="twitter:image" content={ogImage} />}
 
-    <link rel="alternate" type="application/rss+xml" title="The Log — Ishan Bagchi" href="/rss.xml" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="The Log — Ishan Bagchi"
+      href="/rss.xml"
+    />
 
     <script is:inline>
       (function () {
@@ -62,8 +69,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
         // ── Boolean class preferences ──────────────────────────
         if (localStorage.getItem('show-reading-time') === '0') r.classList.add('hide-reading-time');
-        if (localStorage.getItem('wrap-code') === '1')         r.classList.add('wrap-code');
-        if (localStorage.getItem('show-lang-label') === '0')   r.classList.add('hide-lang-label');
+        if (localStorage.getItem('wrap-code') === '1') r.classList.add('wrap-code');
+        if (localStorage.getItem('show-lang-label') === '0') r.classList.add('hide-lang-label');
         if (localStorage.getItem('show-line-numbers') === '0') r.classList.add('hide-line-numbers');
       })();
     </script>
@@ -96,20 +103,20 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   :root,
   [data-theme='dark'] {
     /* Background */
-    --color-bg:            #09090e;
-    --color-surface:       #0e0e17;
-    --color-border:        #1c1c2e;
+    --color-bg: #09090e;
+    --color-surface: #0e0e17;
+    --color-border: #1c1c2e;
     --color-border-subtle: #141420;
 
     /* Gold accent */
-    --color-gold:       #c8a96e;
-    --color-gold-dim:   #7a6240;
+    --color-gold: #c8a96e;
+    --color-gold-dim: #7a6240;
     --color-gold-muted: rgba(200, 169, 110, 0.08);
 
     /* Text */
-    --color-text:       #e8e4d9;
+    --color-text: #e8e4d9;
     --color-text-muted: #6b6585;
-    --color-text-dim:   #9490a8;
+    --color-text-dim: #9490a8;
 
     /* Header glass */
     --color-header-bg: rgba(9, 9, 14, 0.85);
@@ -118,20 +125,20 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   /* ─── Design tokens — light ─────────────────────────────── */
   [data-theme='light'] {
     /* Background */
-    --color-bg:            #faf9f5;
-    --color-surface:       #f2f0ea;
-    --color-border:        #dedad0;
+    --color-bg: #faf9f5;
+    --color-surface: #f2f0ea;
+    --color-border: #dedad0;
     --color-border-subtle: #e8e4da;
 
     /* Gold accent — slightly deeper for contrast on light */
-    --color-gold:       #9a6e32;
-    --color-gold-dim:   #c9a97a;
+    --color-gold: #9a6e32;
+    --color-gold-dim: #c9a97a;
     --color-gold-muted: rgba(154, 110, 50, 0.08);
 
     /* Text */
-    --color-text:       #1a1814;
+    --color-text: #1a1814;
     --color-text-muted: #78706a;
-    --color-text-dim:   #504840;
+    --color-text-dim: #504840;
 
     /* Header glass */
     --color-header-bg: rgba(250, 249, 245, 0.88);
@@ -139,36 +146,34 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
   /* ─── Shared tokens (layout, typography, spacing) ────────── */
   :root {
-
     /* Typography */
     --font-serif: 'Cormorant Garamond', Georgia, serif;
-    --font-sans:  'Inter', system-ui, sans-serif;
-    --font-mono:  'JetBrains Mono', 'Fira Code', monospace;
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
     /* Transitions */
-    --transition-theme: background-color 0.25s ease, color 0.25s ease,
-                        border-color 0.25s ease;
+    --transition-theme: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 
     /* Spacing scale */
-    --space-1:  0.25rem;
-    --space-2:  0.5rem;
-    --space-3:  0.75rem;
-    --space-4:  1rem;
-    --space-6:  1.5rem;
-    --space-8:  2rem;
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
     --space-12: 3rem;
     --space-16: 4rem;
     --space-24: 6rem;
 
     /* Layout */
-    --max-width:      42rem;
+    --max-width: 42rem;
     --max-width-wide: 62rem;
 
     /* Reading preferences (overridable via settings page) */
-    --prose-font-size:   1.0625rem;
+    --prose-font-size: 1.0625rem;
     --prose-line-height: 1.85;
-    --prose-max-width:   42rem;
-    --code-font-size:    0.875rem;
+    --prose-max-width: 42rem;
+    --code-font-size: 0.875rem;
   }
 
   /* ─── Smooth theme transitions ─────────────────────────── */
@@ -183,23 +188,23 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   */
   .astro-code,
   .astro-code span {
-    color:            var(--shiki-dark) !important;
+    color: var(--shiki-dark) !important;
     background-color: var(--shiki-dark-bg) !important;
-    font-style:       var(--shiki-dark-font-style) !important;
-    font-weight:      var(--shiki-dark-font-weight) !important;
+    font-style: var(--shiki-dark-font-style) !important;
+    font-weight: var(--shiki-dark-font-weight) !important;
   }
 
   [data-theme='light'] .astro-code,
   [data-theme='light'] .astro-code span {
-    color:            var(--shiki-light) !important;
+    color: var(--shiki-light) !important;
     background-color: var(--shiki-light-bg) !important;
-    font-style:       var(--shiki-light-font-style) !important;
-    font-weight:      var(--shiki-light-font-weight) !important;
+    font-style: var(--shiki-light-font-style) !important;
+    font-weight: var(--shiki-light-font-weight) !important;
   }
 
   /* ─── Code block light-mode polish ─────────────────────── */
   [data-theme='light'] pre {
-    border-color: #cdd0da;  /* catppuccin-latte surface2 — closer to the theme */
+    border-color: #cdd0da; /* catppuccin-latte surface2 — closer to the theme */
     box-shadow: inset 0 1px 6px rgba(76, 79, 105, 0.06);
   }
 
@@ -218,11 +223,23 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   }
 
   /* ─── Code scroll area scrollbar ─────────────────────────── */
-  .code-scroll-area::-webkit-scrollbar              { height: 3px; width: 3px; }
-  .code-scroll-area::-webkit-scrollbar-track        { background: transparent; }
-  .code-scroll-area::-webkit-scrollbar-thumb        { background: var(--color-border); border-radius: 999px; }
-  .code-scroll-area::-webkit-scrollbar-thumb:hover  { background: var(--color-gold-dim); }
-  .code-scroll-area::-webkit-scrollbar-corner       { background: transparent; }
+  .code-scroll-area::-webkit-scrollbar {
+    height: 3px;
+    width: 3px;
+  }
+  .code-scroll-area::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .code-scroll-area::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 999px;
+  }
+  .code-scroll-area::-webkit-scrollbar-thumb:hover {
+    background: var(--color-gold-dim);
+  }
+  .code-scroll-area::-webkit-scrollbar-corner {
+    background: transparent;
+  }
 
   /* ─── Base ───────────────────────────────────────────────── */
   html {
@@ -243,10 +260,19 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   }
 
   /* ─── Scrollbar ──────────────────────────────────────────── */
-  ::-webkit-scrollbar              { width: 4px; }
-  ::-webkit-scrollbar-track        { background: var(--color-bg); }
-  ::-webkit-scrollbar-thumb        { background: var(--color-border); border-radius: 2px; }
-  ::-webkit-scrollbar-thumb:hover  { background: var(--color-gold-dim); }
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 2px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-gold-dim);
+  }
 
   /* ─── Selection ──────────────────────────────────────────── */
   ::selection {
@@ -256,7 +282,12 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
   /* ─── Typography ─────────────────────────────────────────── */
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-sans);
     font-weight: 600;
     line-height: 1.25;
@@ -306,11 +337,23 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   }
 
   /* Webkit: thin horizontal scrollbar for code blocks */
-  pre::-webkit-scrollbar              { height: 3px; width: 3px; }
-  pre::-webkit-scrollbar-track        { background: transparent; }
-  pre::-webkit-scrollbar-thumb        { background: var(--color-border); border-radius: 999px; }
-  pre::-webkit-scrollbar-thumb:hover  { background: var(--color-gold-dim); }
-  pre::-webkit-scrollbar-corner       { background: transparent; }
+  pre::-webkit-scrollbar {
+    height: 3px;
+    width: 3px;
+  }
+  pre::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  pre::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 999px;
+  }
+  pre::-webkit-scrollbar-thumb:hover {
+    background: var(--color-gold-dim);
+  }
+  pre::-webkit-scrollbar-corner {
+    background: transparent;
+  }
 
   pre code {
     background: transparent;
@@ -350,7 +393,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     font-size: 0.9rem;
   }
 
-  th, td {
+  th,
+  td {
     border: 1px solid var(--color-border);
     padding: var(--space-2) var(--space-4);
     text-align: left;
@@ -367,12 +411,24 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   }
 
   /* ─── Reading preference utilities ─────────────────────── */
-  .hide-reading-time .reading-time           { display: none !important; }
-  .wrap-code .code-scroll-area               { overflow-x: clip !important; }
-  .wrap-code pre code                        { white-space: pre-wrap !important; }
-  .hide-lang-label .code-lang-label          { display: none !important; }
-  .hide-line-numbers .ln                     { display: none !important; }
-  .hide-line-numbers .code-grid              { grid-template-columns: 1fr !important; }
+  .hide-reading-time .reading-time {
+    display: none !important;
+  }
+  .wrap-code .code-scroll-area {
+    overflow-x: clip !important;
+  }
+  .wrap-code pre code {
+    white-space: pre-wrap !important;
+  }
+  .hide-lang-label .code-lang-label {
+    display: none !important;
+  }
+  .hide-line-numbers .ln {
+    display: none !important;
+  }
+  .hide-line-numbers .code-grid {
+    grid-template-columns: 1fr !important;
+  }
 
   /* ─── Header: hide wordmark when hero is visible ────────── */
   .header--hero-visible .wordmark-text,
