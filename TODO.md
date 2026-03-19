@@ -24,14 +24,14 @@ A running list of features, fixes, and improvements to add to the site.
 
 ## Navigation & UX
 
-- [ ] **Custom 404 page** — add `src/pages/404.astro` with a friendly message and a link back home.
-- [ ] **View Transitions** — enable Astro's built-in `<ViewTransitions />` for smooth page-to-page animations.
-- [ ] **Pagination on the home page** — once post count grows, paginate or add a "Load more" button instead of listing everything.
-- [ ] **Full-text search** — integrate [Pagefind](https://pagefind.app) (static, zero-JS by default) or [Fuse.js](https://fusejs.io) for client-side search beyond tag filtering.
-- [ ] **Related posts** — show 2–3 posts with overlapping tags at the bottom of each blog post.
-- [ ] **Reading progress bar** — a thin bar at the top of the viewport that fills as you scroll through a post.
-- [ ] **Back-to-top button** — appears after scrolling down, smoothly scrolls back to top.
-- [ ] **Estimated reading time on blog cards** — surface reading time directly on `BlogCard` so users can gauge length before clicking.
+- [x] **Custom 404 page** — add `src/pages/404.astro` with a friendly message and a link back home.
+- [x] **View Transitions** — enable Astro's built-in `<ViewTransitions />` for smooth page-to-page animations.
+- [x] **Pagination on the home page** — once post count grows, paginate or add a "Load more" button instead of listing everything.
+- [x] **Full-text search** — integrate [Pagefind](https://pagefind.app) (static, zero-JS by default) or [Fuse.js](https://fusejs.io) for client-side search beyond tag filtering.
+- [x] **Related posts** — show 2–3 posts with overlapping tags at the bottom of each blog post.
+- [x] **Reading progress bar** — a thin bar at the top of the viewport that fills as you scroll through a post.
+- [x] **Back-to-top button** — appears after scrolling down, smoothly scrolls back to top.
+- [x] **Estimated reading time on blog cards** — surface reading time directly on `BlogCard` so users can gauge length before clicking.
 
 ---
 

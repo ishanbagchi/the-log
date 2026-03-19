@@ -23,6 +23,28 @@ const { Content } = await render(post);
 const wordCount = post.body?.trim().split(/\s+/).length ?? 0;
 const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 const ogImage = new URL(`/og/${Astro.params.slug}.png`, Astro.site).toString();
+
+const currentSlug = Astro.params.slug as string;
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const relatedPosts = allPosts
+  .filter((p) => {
+    const s = p.id.replace(/\.(md|mdx)$/, '').replace(/\/index$/, '');
+    return s !== currentSlug;
+  })
+  .map((p) => ({
+    post: p,
+    overlap: p.data.tags.filter((t) => post.data.tags.includes(t)).length,
+  }))
+  .filter(({ overlap }) => overlap > 0)
+  .sort((a, b) => b.overlap - a.overlap)
+  .slice(0, 3)
+  .map(({ post: p }) => ({
+    title: p.data.title,
+    description: p.data.description,
+    slug: p.id.replace(/\.(md|mdx)$/, '').replace(/\/index$/, ''),
+    pubDate: p.data.pubDate,
+    tags: p.data.tags,
+  }));
 ---
 
 <BlogPost
@@ -33,6 +55,7 @@ const ogImage = new URL(`/og/${Astro.params.slug}.png`, Astro.site).toString();
   tags={post.data.tags}
   readingTime={readingTime}
   ogImage={ogImage}
+  relatedPosts={relatedPosts}
 >
   <Content />
 </BlogPost>

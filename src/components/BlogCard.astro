@@ -7,9 +7,10 @@ interface Props {
   pubDate: Date;
   slug: string;
   tags?: string[];
+  readingTime?: number;
 }
 
-const { title, description, pubDate, slug, tags = [] } = Astro.props;
+const { title, description, pubDate, slug, tags = [], readingTime } = Astro.props;
 
 const formattedDate = pubDate.toLocaleDateString('en-US', {
   year: 'numeric',
@@ -18,10 +19,13 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
 });
 ---
 
-<article class="card" data-tags={JSON.stringify(tags)}>
+<article class="card" data-tags={JSON.stringify(tags)} data-title={title} data-description={description}>
   <a href={`/log/${slug}`} class="card-link" aria-label={title}>
     <header class="card-header">
-      <time class="card-date" datetime={pubDate.toISOString()}>{formattedDate}</time>
+      <div class="card-meta">
+        <time class="card-date" datetime={pubDate.toISOString()}>{formattedDate}</time>
+        {readingTime && <span class="card-reading-time">· {readingTime} min read</span>}
+      </div>
       {tags.length > 0 && (
         <div class="card-tags" aria-hidden="true">
           {tags.slice(0, 3).map((tag) => (
@@ -63,11 +67,25 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
     margin-bottom: var(--space-3);
   }
 
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
   .card-date {
     font-family: var(--font-mono);
     font-size: 0.75rem;
     letter-spacing: 0.04em;
     color: var(--color-text-muted);
+  }
+
+  .card-reading-time {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    opacity: 0.7;
   }
 
   .card-tags {

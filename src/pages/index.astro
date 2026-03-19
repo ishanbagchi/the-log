@@ -47,6 +47,16 @@ const allTags = Object.entries(tagCounts).sort(([a], [b]) => a.localeCompare(b))
               <span class="filter-label">// filter by topic</span>
               <span class="filter-count" id="filter-count">{posts.length} post{posts.length !== 1 ? 's' : ''}</span>
             </div>
+            <div class="search-wrapper">
+              <input
+                type="search"
+                id="search-input"
+                class="search-input"
+                placeholder="Search posts…"
+                autocomplete="off"
+                spellcheck="false"
+              />
+            </div>
             <div class="tag-filter" role="group" aria-label="Filter by tag">
               <button class="filter-btn filter-btn--active" data-tag="all">
                 All
@@ -74,9 +84,16 @@ const allTags = Object.entries(tagCounts).sort(([a], [b]) => a.localeCompare(b))
                 pubDate={post.data.pubDate}
                 slug={toRouteSlug(post.id)}
                 tags={post.data.tags}
+                readingTime={Math.max(1, Math.ceil((post.body?.trim().split(/\s+/).length ?? 0) / 200))}
               />
             ))
           )}
+        </div>
+
+        <div id="load-more-wrapper">
+          <button id="load-more-btn" class="load-more-btn" hidden>
+            Load more posts
+          </button>
         </div>
 
         <p id="no-results" class="empty" hidden>
@@ -259,38 +276,118 @@ const allTags = Object.entries(tagCounts).sort(([a], [b]) => a.localeCompare(b))
     color: var(--color-text-muted);
     padding: var(--space-8) 0;
   }
+
+  .search-wrapper {
+    margin-bottom: var(--space-4);
+  }
+
+  .search-input {
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+    color: var(--color-text);
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 0.5em 0.9em;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .search-input::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.5;
+  }
+
+  .search-input:focus {
+    border-color: var(--color-gold-dim);
+  }
+
+  .load-more-btn {
+    display: block;
+    width: 100%;
+    margin-top: var(--space-6);
+    padding: 0.65em 1.2em;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  }
+
+  .load-more-btn:hover {
+    color: var(--color-gold);
+    border-color: var(--color-gold-dim);
+    background: var(--color-gold-muted);
+  }
 </style>
 
 <script>
+  const PAGE_SIZE = 6;
+
   const buttons     = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
   const postsList   = document.getElementById('posts-list')!;
   const noResults   = document.getElementById('no-results') as HTMLParagraphElement;
   const filterCount = document.getElementById('filter-count') as HTMLSpanElement;
+  const searchInput = document.getElementById('search-input') as HTMLInputElement;
+  const loadMoreBtn = document.getElementById('load-more-btn') as HTMLButtonElement;
   const cards       = postsList.querySelectorAll<HTMLElement>('[data-tags]');
 
-  function filterPosts(tag: string) {
-    let visibleCount = 0;
+  let activeTag   = 'all';
+  let searchQuery = '';
+  let loadedCount = PAGE_SIZE;
+
+  function updateView() {
+    const q = searchQuery.toLowerCase();
+    const matching: HTMLElement[] = [];
 
     cards.forEach((card) => {
       const tags: string[] = JSON.parse(card.dataset.tags ?? '[]');
-      const show = tag === 'all' || tags.includes(tag);
-      card.hidden = !show;
-      if (show) visibleCount++;
+      const matchesTag    = activeTag === 'all' || tags.includes(activeTag);
+      const title         = (card.dataset.title ?? '').toLowerCase();
+      const desc          = (card.dataset.description ?? '').toLowerCase();
+      const matchesSearch = !q || title.includes(q) || desc.includes(q);
+      if (matchesTag && matchesSearch) matching.push(card);
     });
 
-    noResults.hidden = visibleCount > 0;
+    cards.forEach((card) => { card.hidden = true; });
+    matching.slice(0, loadedCount).forEach((card) => { card.hidden = false; });
 
-    const label = tag === 'all' ? 'All topics' : `#${tag}`;
-    filterCount.textContent = `${visibleCount} post${visibleCount !== 1 ? 's' : ''}`;
+    noResults.hidden        = matching.length > 0;
+    filterCount.textContent = `${matching.length} post${matching.length !== 1 ? 's' : ''}`;
+    loadMoreBtn.hidden      = loadedCount >= matching.length;
 
     buttons.forEach((btn) => {
-      btn.classList.toggle('filter-btn--active', btn.dataset.tag === tag);
+      btn.classList.toggle('filter-btn--active', btn.dataset.tag === activeTag);
     });
   }
 
   buttons.forEach((btn) => {
-    btn.addEventListener('click', () => filterPosts(btn.dataset.tag!));
+    btn.addEventListener('click', () => {
+      activeTag   = btn.dataset.tag!;
+      loadedCount = PAGE_SIZE;
+      updateView();
+    });
   });
+
+  searchInput.addEventListener('input', () => {
+    searchQuery = searchInput.value.trim();
+    loadedCount = PAGE_SIZE;
+    updateView();
+  });
+
+  loadMoreBtn.addEventListener('click', () => {
+    loadedCount += PAGE_SIZE;
+    updateView();
+  });
+
+  updateView();
 </script>
 
 <script>
