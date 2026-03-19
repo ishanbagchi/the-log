@@ -6,7 +6,7 @@ import Footer from '../components/Footer.astro';
 import BlogCard from '../components/BlogCard.astro';
 
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
-const toRouteSlug = (id: string) => id.replace(/\.md$/, '');
+const toRouteSlug = (id: string) => id.replace(/\.(md|mdx)$/, '').replace(/\/index$/, '');
 
 const posts = allPosts.sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
