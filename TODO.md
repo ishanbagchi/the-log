@@ -14,11 +14,11 @@ A running list of features, fixes, and improvements to add to the site.
 
 ## SEO & Discoverability
 
-- [ ] **RSS feed** — add `@astrojs/rss` and expose a `/rss.xml` endpoint.
-- [ ] **Sitemap** — add `@astrojs/sitemap` integration so search engines can crawl all pages.
-- [ ] **`robots.txt`** — add a `public/robots.txt` that allows all crawlers and points to the sitemap.
-- [ ] **Twitter/X card meta tags** — add `twitter:card`, `twitter:title`, `twitter:description`, `twitter:creator` to the `<head>`.
-- [ ] **Per-post OG image** — generate dynamic Open Graph images (e.g. using `@vercel/og` or Astro's canvas-based OG image endpoint) so every post gets a unique social preview card.
+- [x] **RSS feed** — add `@astrojs/rss` and expose a `/rss.xml` endpoint.
+- [x] **Sitemap** — add `@astrojs/sitemap` integration so search engines can crawl all pages.
+- [x] **`robots.txt`** — add a `public/robots.txt` that allows all crawlers and points to the sitemap.
+- [x] **Twitter/X card meta tags** — add `twitter:card`, `twitter:title`, `twitter:description`, `twitter:creator` to the `<head>`.
+- [x] **Per-post OG image** — generate dynamic Open Graph images (e.g. using `@vercel/og` or Astro's canvas-based OG image endpoint) so every post gets a unique social preview card.
 
 ---
 

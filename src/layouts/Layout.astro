@@ -35,6 +35,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     <meta property="og:description" content={description} />
     {ogImage && <meta property="og:image" content={ogImage} />}
 
+    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
+
+    <link rel="alternate" type="application/rss+xml" title="The Log — Ishan Bagchi" href="/rss.xml" />
+
     <script is:inline>
       (function () {
         var r = document.documentElement;

@@ -11,9 +11,10 @@ interface Props {
   updatedDate?: Date;
   tags?: string[];
   readingTime?: number;
+  ogImage?: string;
 }
 
-const { title, description, pubDate, updatedDate, tags = [], readingTime } = Astro.props;
+const { title, description, pubDate, updatedDate, tags = [], readingTime, ogImage } = Astro.props;
 
 const formattedPubDate = pubDate.toLocaleDateString('en-US', {
   year: 'numeric',
@@ -28,7 +29,7 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
 });
 ---
 
-<Layout title={`${title} - The Log`} description={description}>
+<Layout title={`${title} - The Log`} description={description} ogImage={ogImage}>
   <Header />
 
   <main class="post-wrapper">

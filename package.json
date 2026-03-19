@@ -10,9 +10,13 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",
+    "@astrojs/rss": "^4.0.17",
+    "@astrojs/sitemap": "^3.7.1",
     "@iconify-json/lucide": "^1.2.93",
+    "@resvg/resvg-js": "^2.6.2",
     "@vercel/analytics": "^1.6.1",
     "astro": "^5.17.1",
-    "astro-icon": "^1.1.5"
+    "astro-icon": "^1.1.5",
+    "satori": "^0.25.0"
   }
 }
